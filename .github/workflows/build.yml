@@ -3,9 +3,9 @@ name: Build and Test
 # Trigger the workflow on push or pull request events to the master branch
 on:
   push:
-    branches: [ master ]  # Replace 'master' with 'main' if that is your default branch
+    branches: [ ML ]  # Replace 'master' with 'main' if that is your default branch
   pull_request:
-    branches: [ master ]
+    branches: [ ML ]
 
 jobs:
   build:
