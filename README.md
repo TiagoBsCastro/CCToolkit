@@ -97,7 +97,7 @@ plt.show()
 
 ## Documentation
 
-For detailed documentation and API reference, please visit [CCToolkit Documentation](https://TiagoBsCastro.github.io/CCToolkit).
+For detailed documentation and API reference, please visit [CCToolkit Documentation](https://cctoolkit.readthedocs.io).
 
 ## Contributing
 
