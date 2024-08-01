@@ -23,10 +23,12 @@ CCToolkit is a Python package designed for Cluster Cosmology calculations, inclu
 
 ## Installation
 
-To install MyCosmologyPackage, use pip:
+To install CCToolkit clone the repository and use pip:
 
 ```bash
-pip install cctoolkit
+git clone git@github.com:TiagoBsCastro/CCToolkit.git
+cd CCToolkit
+python -m pip install .
 ```
 
 ### Dependencies
@@ -41,7 +43,7 @@ pip install cctoolkit
 To use CCToolkit, start by importing the necessary modules and initializing the `CosmologyCalculator` with your desired cosmological parameters:
 
 ```python
-from mycosmologypackage import CosmologyCalculator
+from cctoolkit import CosmologyCalculator
 
 # Define cosmological parameters
 params = {
