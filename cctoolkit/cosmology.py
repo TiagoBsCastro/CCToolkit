@@ -33,13 +33,11 @@ class CosmologyCalculator:
     Attributes:
     -----------
     params : dict
-        Cosmological parameters for the model, including 'H0', 'Ob0', 'Om0', 'sigma8', 'ns', 'As', 'tau', 'TCMB', and 'mnu'.
+        Cosmological parameters for the model, including 'H0', 'Ob0', 'Om0', 'sigma8', 'ns', 'TCMB', 'mnu', 'number of massive neutrinos species', 'w0', and 'wa'.
     cosmo : object
         An instance of CAMB results, containing cosmological data.
     k : np.ndarray
         Array of wavenumbers used in the power spectrum calculations.
-    Pk : dict
-        Dictionary where keys are redshifts and values are arrays of the power spectrum values.
     Dk : dict
         Dictionary where keys are redshifts and values are arrays of dimensionless power spectrum values.
     z_vals : np.ndarray
