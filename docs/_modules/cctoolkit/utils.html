@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cctoolkit.utils &mdash; CCToolkit 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            CCToolkit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CCToolkit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">cctoolkit.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for cctoolkit.utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">utils.py</span>
+
+<span class="sd">This module can contain utility functions or constants that may be useful</span>
+<span class="sd">across the package. </span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="w_tophat">
+<a class="viewcode-back" href="../../api/modules.html#cctoolkit.utils.w_tophat">[docs]</a>
+<span class="k">def</span> <span class="nf">w_tophat</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fourier Transform of the spherical top-hat function.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    r : float</span>
+<span class="sd">        Radius of the spherical top-hat window.</span>
+<span class="sd">    k : float or np.ndarray</span>
+<span class="sd">        Wavenumber(s).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    float or np.ndarray</span>
+<span class="sd">        The Fourier Transform of the top-hat function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mf">3.</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="n">k</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">r</span><span class="p">))</span> <span class="o">/</span> <span class="p">((</span><span class="n">k</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span> <span class="o">**</span> <span class="mi">3</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="dw_tophat_sq_dr">
+<a class="viewcode-back" href="../../api/modules.html#cctoolkit.utils.dw_tophat_sq_dr">[docs]</a>
+<span class="k">def</span> <span class="nf">dw_tophat_sq_dr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Derivative of the square of the Fourier Transform of the top-hat function with respect to r.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    r : float</span>
+<span class="sd">        Radius of the spherical top-hat window.</span>
+<span class="sd">    k : float or np.ndarray</span>
+<span class="sd">        Wavenumber(s).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    float or np.ndarray</span>
+<span class="sd">        The derivative with respect to r.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="mf">18.</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">r</span><span class="p">))</span> <span class="o">*</span> 
+            <span class="p">(</span><span class="mf">3.</span> <span class="o">*</span> <span class="n">k</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="mf">3.</span> <span class="o">+</span> <span class="p">(</span><span class="n">k</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">r</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">r</span><span class="p">)))</span> <span class="o">/</span> <span class="p">((</span><span class="n">k</span> <span class="o">**</span> <span class="mi">6</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">r</span> <span class="o">**</span> <span class="mi">7</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="s_rsq_integrand_given_Dk">
+<a class="viewcode-back" href="../../api/modules.html#cctoolkit.utils.s_rsq_integrand_given_Dk">[docs]</a>
+<span class="k">def</span> <span class="nf">s_rsq_integrand_given_Dk</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">Dk</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Integrand for the calculation of sigma_r^2.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    r : float</span>
+<span class="sd">        Radius of the spherical top-hat window.</span>
+<span class="sd">    k : np.ndarray</span>
+<span class="sd">        Wavenumber array.</span>
+<span class="sd">    Dk : np.ndarray</span>
+<span class="sd">        Dimensionless power spectrum array.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        The integrand for sigma_r^2.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">w_tophat</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">Dk</span> <span class="o">/</span> <span class="n">k</span></div>
+
+
+<div class="viewcode-block" id="d_s_rsq_integrand_given_Dk">
+<a class="viewcode-back" href="../../api/modules.html#cctoolkit.utils.d_s_rsq_integrand_given_Dk">[docs]</a>
+<span class="k">def</span> <span class="nf">d_s_rsq_integrand_given_Dk</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">Dk</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Integrand for the derivative of sigma_r^2 with respect to r.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    r : float</span>
+<span class="sd">        Radius of the spherical top-hat window.</span>
+<span class="sd">    k : np.ndarray</span>
+<span class="sd">        Wavenumber array.</span>
+<span class="sd">    Dk : np.ndarray</span>
+<span class="sd">        Dimensionless power spectrum array.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        The integrand for the derivative of sigma_r^2 with respect to r.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">dw_tophat_sq_dr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span> <span class="o">*</span> <span class="n">Dk</span> <span class="o">/</span> <span class="n">k</span></div>
+
+
+<div class="viewcode-block" id="ssq_given_Dk">
+<a class="viewcode-back" href="../../api/modules.html#cctoolkit.utils.ssq_given_Dk">[docs]</a>
+<span class="k">def</span> <span class="nf">ssq_given_Dk</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">Dk</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute sigma_r^2 for a given radius and power spectrum.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    r : float</span>
+<span class="sd">        Radius of the spherical top-hat window.</span>
+<span class="sd">    k : np.ndarray</span>
+<span class="sd">        Wavenumber array.</span>
+<span class="sd">    Dk : np.ndarray</span>
+<span class="sd">        Dimensionless power spectrum array.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    float</span>
+<span class="sd">        The value of sigma_r^2.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">s_sq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">s_rsq_integrand_given_Dk</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">Dk</span><span class="p">),</span> <span class="n">x</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s_sq</span></div>
+
+
+<div class="viewcode-block" id="d_s_given_Dk">
+<a class="viewcode-back" href="../../api/modules.html#cctoolkit.utils.d_s_given_Dk">[docs]</a>
+<span class="k">def</span> <span class="nf">d_s_given_Dk</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">Dk</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the derivative of sigma_r with respect to r.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    r : float</span>
+<span class="sd">        Radius of the spherical top-hat window.</span>
+<span class="sd">    k : np.ndarray</span>
+<span class="sd">        Wavenumber array.</span>
+<span class="sd">    Dk : np.ndarray</span>
+<span class="sd">        Dimensionless power spectrum array.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    float</span>
+<span class="sd">        The derivative of sigma_r with respect to r.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">d_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">d_s_rsq_integrand_given_Dk</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">Dk</span><span class="p">),</span> <span class="n">x</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">d_s</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ssq_given_Dk</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">Dk</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="compute_sigma8_norm">
+<a class="viewcode-back" href="../../api/modules.html#cctoolkit.utils.compute_sigma8_norm">[docs]</a>
+<span class="k">def</span> <span class="nf">compute_sigma8_norm</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">Dk</span><span class="p">,</span> <span class="n">sigma8</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Normalize the dimensionless power spectrum to the given sigma8.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">    k : np.ndarray</span>
+<span class="sd">        Wavenumber array.</span>
+<span class="sd">    Dk : np.ndarray</span>
+<span class="sd">        Dimensionless power spectrum array.</span>
+<span class="sd">    sigma8 : float</span>
+<span class="sd">        The value of sigma8.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">    float</span>
+<span class="sd">        The normalization factor for the power spectrum.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">s_sq</span> <span class="o">=</span> <span class="n">ssq_given_Dk</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">Dk</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s_sq</span> <span class="o">/</span> <span class="n">sigma8</span> <span class="o">**</span> <span class="mi">2</span></div>
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tiago Castro.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

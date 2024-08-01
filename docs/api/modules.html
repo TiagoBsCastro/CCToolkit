@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Reference &mdash; CCToolkit 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="CCToolkit Documentation" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CCToolkit
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-cctoolkit">cctoolkit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-cctoolkit.cosmology">cosmology</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator.H"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator.H()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator.Omega_DE"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator.Omega_DE()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator.Omega_k"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator.Omega_k()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator.Omega_m"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator.Omega_m()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator.Omega_nu"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator.Omega_nu()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator.bias"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator.bias()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator.critical_density"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator.critical_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator.delta_c"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator.delta_c()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator.dlnsigma_dlnR"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator.dlnsigma_dlnR()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator.dndlnM"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator.dndlnM()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator.get_power_spectrum"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator.get_power_spectrum()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator.lagrangian_radius"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator.lagrangian_radius()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator.pbs_bias"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator.pbs_bias()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator.peak_height"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator.peak_height()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator.set_cosmology"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator.set_cosmology()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator.sigma"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator.sigma()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cctoolkit.cosmology.CosmologyCalculator.vfv"><code class="docutils literal notranslate"><span class="pre">CosmologyCalculator.vfv()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-cctoolkit.bias">bias</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cctoolkit.bias.bias_correction_PBS"><code class="docutils literal notranslate"><span class="pre">bias_correction_PBS()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cctoolkit.bias.corrected_bias"><code class="docutils literal notranslate"><span class="pre">corrected_bias()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-cctoolkit.hmf">hmf</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cctoolkit.hmf.multiplicity_function"><code class="docutils literal notranslate"><span class="pre">multiplicity_function()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-cctoolkit.utils">utils</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cctoolkit.utils.compute_sigma8_norm"><code class="docutils literal notranslate"><span class="pre">compute_sigma8_norm()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cctoolkit.utils.d_s_given_Dk"><code class="docutils literal notranslate"><span class="pre">d_s_given_Dk()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cctoolkit.utils.d_s_rsq_integrand_given_Dk"><code class="docutils literal notranslate"><span class="pre">d_s_rsq_integrand_given_Dk()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cctoolkit.utils.dw_tophat_sq_dr"><code class="docutils literal notranslate"><span class="pre">dw_tophat_sq_dr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cctoolkit.utils.s_rsq_integrand_given_Dk"><code class="docutils literal notranslate"><span class="pre">s_rsq_integrand_given_Dk()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cctoolkit.utils.ssq_given_Dk"><code class="docutils literal notranslate"><span class="pre">ssq_given_Dk()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cctoolkit.utils.w_tophat"><code class="docutils literal notranslate"><span class="pre">w_tophat()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CCToolkit</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
+<section id="module-cctoolkit">
+<span id="cctoolkit"></span><h2>cctoolkit<a class="headerlink" href="#module-cctoolkit" title="Link to this heading"></a></h2>
+</section>
+<section id="module-cctoolkit.cosmology">
+<span id="cosmology"></span><h2>cosmology<a class="headerlink" href="#module-cctoolkit.cosmology" title="Link to this heading"></a></h2>
+<p>cosmology.py</p>
+<p>This module defines the CosmologyCalculator class, which manages cosmological
+parameters and calculations related to the power spectrum and other cosmological
+quantities using CAMB.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cctoolkit.cosmology.</span></span><span class="sig-name descname"><span class="pre">CosmologyCalculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power_spectrum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cdm+b'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A class to handle cosmological calculations using CAMB.</p>
+<p>This class facilitates the calculation of various cosmological quantities, including
+power spectra, density parameters, and functions related to the Halo Mass Function (HMF).
+It includes methods for calculating the Peak Background Split (PBS) bias and corrected bias,
+utilizing the CAMB library.</p>
+<section id="attributes">
+<h3>Attributes:<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>params<span class="classifier">dict</span></dt><dd><p>Cosmological parameters for the model, including ‘H0’, ‘Ob0’, ‘Om0’, ‘sigma8’, ‘ns’, ‘As’, ‘tau’, ‘TCMB’, and ‘mnu’.</p>
+</dd>
+<dt>cosmo<span class="classifier">object</span></dt><dd><p>An instance of CAMB results, containing cosmological data.</p>
+</dd>
+<dt>k<span class="classifier">np.ndarray</span></dt><dd><p>Array of wavenumbers used in the power spectrum calculations.</p>
+</dd>
+<dt>Pk<span class="classifier">dict</span></dt><dd><p>Dictionary where keys are redshifts and values are arrays of the power spectrum values.</p>
+</dd>
+<dt>Dk<span class="classifier">dict</span></dt><dd><p>Dictionary where keys are redshifts and values are arrays of dimensionless power spectrum values.</p>
+</dd>
+<dt>z_vals<span class="classifier">np.ndarray</span></dt><dd><p>Array of redshift values used for power spectrum calculations.</p>
+</dd>
+</dl>
+</section>
+<section id="methods">
+<h3>Methods:<a class="headerlink" href="#methods" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>delta_c(Om, z=None):</dt><dd><p>Calculates the critical density contrast (delta_c) for a given matter density.</p>
+</dd>
+<dt>get_power_spectrum(z):</dt><dd><p>Returns the wavenumbers and dimensionless power spectrum at a given redshift.</p>
+</dd>
+<dt>set_cosmology(new_params):</dt><dd><p>Updates the cosmological parameters and recalculates the power spectrum normalization.</p>
+</dd>
+<dt>Omega_m(z):</dt><dd><p>Returns the matter density parameter Omega_m as a function of redshift.</p>
+</dd>
+<dt>Omega_nu(z):</dt><dd><p>Returns the neutrino density parameter Omega_nu as a function of redshift.</p>
+</dd>
+<dt>Omega_k(z):</dt><dd><p>Returns the curvature density parameter Omega_k as a function of redshift.</p>
+</dd>
+<dt>Omega_DE(z):</dt><dd><p>Returns the dark energy density parameter Omega_DE as a function of redshift.</p>
+</dd>
+<dt>critical_density(z):</dt><dd><p>Returns the critical density at a given redshift.</p>
+</dd>
+<dt>H(z):</dt><dd><p>Returns the Hubble parameter H at a given redshift.</p>
+</dd>
+<dt>peak_height(M, z):</dt><dd><p>Calculates the peak-height delta_c / sigma(R(M), z) for a given mass and redshift.</p>
+</dd>
+<dt>lagrangian_radius(M):</dt><dd><p>Calculates the radius of the Lagrangian patch corresponding to a given mass M.</p>
+</dd>
+<dt>sigma(R, z):</dt><dd><p>Calculates the RMS fluctuation sigma(R, z) for a given radius and redshift.</p>
+</dd>
+<dt>dlnsigma_dlnR(R):</dt><dd><p>Calculates the derivative of the logarithm of sigma with respect to the logarithm of R.</p>
+</dd>
+<dt>vfv(M, z, return_variables=False, halo_finder=best_fit_values_ROCKSTAR):</dt><dd><p>Calculates the multiplicity function νf(ν) and related variables for a given mass and redshift.</p>
+</dd>
+<dt>dndlnM(M, z, halo_finder=’ROCKSTAR’):</dt><dd><p>Calculates the halo mass function dn/dlnM, representing the number density of halos per logarithmic mass interval.</p>
+</dd>
+<dt>pbs_bias(M, z, halo_finder=’ROCKSTAR’, return_variables=False):</dt><dd><p>Calculates the PBS bias for halos of mass M at redshift z.</p>
+</dd>
+<dt>bias(M, z, halo_finder=’ROCKSTAR’):</dt><dd><p>Calculates the corrected linear halo bias for given mass and redshift, using the PBS prediction and correction factors.</p>
+</dd>
+</dl>
+</section>
+<section id="notes">
+<h3>Notes:<a class="headerlink" href="#notes" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>This class requires CAMB to be installed and available for the power spectrum calculations.</p></li>
+<li><p>The methods assume that the input masses (M) are in units of solar masses over h (M_sun/h), and distances (R) are in Mpc/h.</p></li>
+<li><p>The halo finder parameters must be provided correctly to ensure accurate mass function and bias calculations.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator.H">
+<span class="sig-name descname"><span class="pre">H</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator.H"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator.H" title="Link to this definition"></a></dt>
+<dd><p>Get the Hubble parameter H at a given redshift.</p>
+<section id="parameters">
+<h4>Parameters:<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>z<span class="classifier">float</span></dt><dd><p>Redshift.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h4>Returns:<a class="headerlink" href="#returns" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>float</dt><dd><p>The Hubble parameter H(z) in km/s/Mpc at redshift z.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator.Omega_DE">
+<span class="sig-name descname"><span class="pre">Omega_DE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator.Omega_DE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator.Omega_DE" title="Link to this definition"></a></dt>
+<dd><p>Get the dark energy density parameter Omega_DE at a given redshift.</p>
+<section id="id1">
+<h4>Parameters:<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>z<span class="classifier">float</span></dt><dd><p>Redshift.</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h4>Returns:<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>float</dt><dd><p>The dark energy density parameter Omega_DE at redshift z.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator.Omega_k">
+<span class="sig-name descname"><span class="pre">Omega_k</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator.Omega_k"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator.Omega_k" title="Link to this definition"></a></dt>
+<dd><p>Get the curvature density parameter Omega_k at a given redshift.</p>
+<section id="id3">
+<h4>Parameters:<a class="headerlink" href="#id3" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>z<span class="classifier">float</span></dt><dd><p>Redshift.</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h4>Returns:<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>float</dt><dd><p>The curvature density parameter Omega_k at redshift z.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator.Omega_m">
+<span class="sig-name descname"><span class="pre">Omega_m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator.Omega_m"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator.Omega_m" title="Link to this definition"></a></dt>
+<dd><p>Get the matter density parameter Omega_m at a given redshift.</p>
+<section id="id5">
+<h4>Parameters:<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>z<span class="classifier">float</span></dt><dd><p>Redshift.</p>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h4>Returns:<a class="headerlink" href="#id6" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>float</dt><dd><p>The matter density parameter Omega_m at redshift z.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator.Omega_nu">
+<span class="sig-name descname"><span class="pre">Omega_nu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator.Omega_nu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator.Omega_nu" title="Link to this definition"></a></dt>
+<dd><p>Get the neutrino density parameter Omega_nu at a given redshift.</p>
+<section id="id7">
+<h4>Parameters:<a class="headerlink" href="#id7" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>z<span class="classifier">float</span></dt><dd><p>Redshift.</p>
+</dd>
+</dl>
+</section>
+<section id="id8">
+<h4>Returns:<a class="headerlink" href="#id8" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>float</dt><dd><p>The neutrino density parameter Omega_nu at redshift z.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator.bias">
+<span class="sig-name descname"><span class="pre">bias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_finder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ROCKSTAR'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator.bias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator.bias" title="Link to this definition"></a></dt>
+<dd><p>Calculate the corrected linear halo bias.</p>
+<section id="id9">
+<h4>Parameters:<a class="headerlink" href="#id9" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>M<span class="classifier">np.ndarray</span></dt><dd><p>Mass of the halos in solar masses over h. Can be a scalar or array.</p>
+</dd>
+<dt>z<span class="classifier">float</span></dt><dd><p>Redshift.</p>
+</dd>
+<dt>halo_finder<span class="classifier">str</span></dt><dd><p>The halo finder used to determine the best-fit parameters. Default is ‘ROCKSTAR’.</p>
+</dd>
+</dl>
+</section>
+<section id="id10">
+<h4>Returns:<a class="headerlink" href="#id10" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>np.ndarray</dt><dd><p>The corrected linear halo bias.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator.critical_density">
+<span class="sig-name descname"><span class="pre">critical_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator.critical_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator.critical_density" title="Link to this definition"></a></dt>
+<dd><p>Get the critical density at a given redshift.</p>
+<section id="id11">
+<h4>Parameters:<a class="headerlink" href="#id11" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>z<span class="classifier">float</span></dt><dd><p>Redshift.</p>
+</dd>
+</dl>
+</section>
+<section id="id12">
+<h4>Returns:<a class="headerlink" href="#id12" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>float</dt><dd><p>The critical density at redshift z in units of 10^10 M_sun / (h^2 Mpc^3).</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator.delta_c">
+<span class="sig-name descname"><span class="pre">delta_c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Om</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator.delta_c"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator.delta_c" title="Link to this definition"></a></dt>
+<dd><p>Calculate the critical density contrast (delta_c) using Bryan and Norman fit.</p>
+<section id="id13">
+<h4>Parameters:<a class="headerlink" href="#id13" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>Om<span class="classifier">float or callable</span></dt><dd><p>Matter density parameter. If callable, it should return Om as a function of z.</p>
+</dd>
+<dt>z<span class="classifier">float or array-like, optional</span></dt><dd><p>Redshift at which to evaluate Om if Om is a function.</p>
+</dd>
+</dl>
+</section>
+<section id="id14">
+<h4>Returns:<a class="headerlink" href="#id14" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>float</dt><dd><p>The critical density contrast delta_c.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator.dlnsigma_dlnR">
+<span class="sig-name descname"><span class="pre">dlnsigma_dlnR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator.dlnsigma_dlnR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator.dlnsigma_dlnR" title="Link to this definition"></a></dt>
+<dd><p>Calculate the derivative of the logarithm of sigma with respect to the logarithm of R.</p>
+<section id="id15">
+<h4>Parameters:<a class="headerlink" href="#id15" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>R<span class="classifier">float</span></dt><dd><p>Radius in Mpc/h.</p>
+</dd>
+<dt>z<span class="classifier">float</span></dt><dd><p>Redshift.</p>
+</dd>
+</dl>
+</section>
+<section id="id16">
+<h4>Returns:<a class="headerlink" href="#id16" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>float</dt><dd><p>The derivative dln(sigma)/dln(R).</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator.dndlnM">
+<span class="sig-name descname"><span class="pre">dndlnM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_finder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ROCKSTAR'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator.dndlnM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator.dndlnM" title="Link to this definition"></a></dt>
+<dd><p>Calculate the halo mass function, dn/dlnM, which gives the number density of halos 
+per logarithmic mass interval.</p>
+<section id="id17">
+<h4>Parameters:<a class="headerlink" href="#id17" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>M<span class="classifier">np.ndarray</span></dt><dd><p>Mass of the halos in solar masses over h.</p>
+</dd>
+<dt>z<span class="classifier">float</span></dt><dd><p>Redshift.</p>
+</dd>
+<dt>halo_finder<span class="classifier">str, optional</span></dt><dd><p>Descriptor for the best-fit values for the mass function parameters.
+Default is <cite>ROCKSTAR</cite>. Options are: <cite>AHF</cite>, <cite>ROCKSTAR</cite>, <cite>SUBFIND</cite>, and <cite>VELOCIraptor</cite>.</p>
+</dd>
+</dl>
+</section>
+<section id="id18">
+<h4>Returns:<a class="headerlink" href="#id18" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>np.ndarray</dt><dd><p>The halo mass function dn/dlnM, with units of number density per logarithmic mass interval.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator.get_power_spectrum">
+<span class="sig-name descname"><span class="pre">get_power_spectrum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator.get_power_spectrum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator.get_power_spectrum" title="Link to this definition"></a></dt>
+<dd><p>Get the wavenumber and dimensionless power spectrum arrays at a given redshift.</p>
+<section id="id19">
+<h4>Parameters:<a class="headerlink" href="#id19" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>z<span class="classifier">float, optional</span></dt><dd><p>Redshift at which to get the power spectrum. Default is 0.</p>
+</dd>
+</dl>
+</section>
+<section id="id20">
+<h4>Returns:<a class="headerlink" href="#id20" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>tuple</dt><dd><p>(k, Dk) where k is the array of wavenumbers and Dk is the dimensionless power spectrum.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator.lagrangian_radius">
+<span class="sig-name descname"><span class="pre">lagrangian_radius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator.lagrangian_radius"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator.lagrangian_radius" title="Link to this definition"></a></dt>
+<dd><p>Calculate the radius of the Lagrangian patch corresponding to a given mass M.</p>
+<section id="id21">
+<h4>Parameters:<a class="headerlink" href="#id21" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>M<span class="classifier">float</span></dt><dd><p>Mass in solar masses over h.</p>
+</dd>
+</dl>
+</section>
+<section id="id22">
+<h4>Returns:<a class="headerlink" href="#id22" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>float</dt><dd><p>The Lagrangian radius in Mpc/h.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator.pbs_bias">
+<span class="sig-name descname"><span class="pre">pbs_bias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_finder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ROCKSTAR'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator.pbs_bias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator.pbs_bias" title="Link to this definition"></a></dt>
+<dd><p>Calculate the PBS bias for halos of mass M at redshift z.</p>
+<section id="id23">
+<h4>Parameters:<a class="headerlink" href="#id23" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>M<span class="classifier">np.ndarray</span></dt><dd><p>Mass of the halos in solar masses over h.</p>
+</dd>
+<dt>z<span class="classifier">float</span></dt><dd><p>Redshift.</p>
+</dd>
+<dt>halo_finder<span class="classifier">str</span></dt><dd><p>The halo finder used to determine the best-fit parameters. Default is ‘ROCKSTAR’.</p>
+</dd>
+<dt>return_variables<span class="classifier">bool, optional</span></dt><dd><p>If True, returns additional intermediate variables used in the calculation.
+If False, returns only the bias. Default is False.</p>
+</dd>
+</dl>
+</section>
+<section id="id24">
+<h4>Returns:<a class="headerlink" href="#id24" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>np.ndarray or tuple</dt><dd><p>If <cite>return_variables</cite> is False, returns an array of the PBS bias.
+If <cite>return_variables</cite> is True, returns a tuple containing:
+- M : Mass array
+- R : Lagrangian radius array corresponding to M
+- v : Peak-height array
+- dlnsdlnR : Derivative of log sigma with respect to log R
+- vfv : Multiplicity function values
+- bias : PBS bias values</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator.peak_height">
+<span class="sig-name descname"><span class="pre">peak_height</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator.peak_height"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator.peak_height" title="Link to this definition"></a></dt>
+<dd><p>Calculate the peak-height delta_c / sigma(R(M), z).</p>
+<section id="id25">
+<h4>Parameters:<a class="headerlink" href="#id25" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>M<span class="classifier">float</span></dt><dd><p>Mass in solar masses over h.</p>
+</dd>
+<dt>z<span class="classifier">float</span></dt><dd><p>Redshift.</p>
+</dd>
+</dl>
+</section>
+<section id="id26">
+<h4>Returns:<a class="headerlink" href="#id26" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>float</dt><dd><p>The peak-height.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator.set_cosmology">
+<span class="sig-name descname"><span class="pre">set_cosmology</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator.set_cosmology"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator.set_cosmology" title="Link to this definition"></a></dt>
+<dd><p>Update cosmological parameters and recalculate the power spectrum normalization.</p>
+<section id="id27">
+<h4>Parameters:<a class="headerlink" href="#id27" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>new_params<span class="classifier">dict</span></dt><dd><p>Dictionary of new cosmological parameters.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator.sigma">
+<span class="sig-name descname"><span class="pre">sigma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator.sigma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator.sigma" title="Link to this definition"></a></dt>
+<dd><p>Calculate the RMS fluctuation sigma(R, z).</p>
+<section id="id28">
+<h4>Parameters:<a class="headerlink" href="#id28" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>R<span class="classifier">float</span></dt><dd><p>Radius in Mpc/h.</p>
+</dd>
+<dt>z<span class="classifier">float</span></dt><dd><p>Redshift.</p>
+</dd>
+</dl>
+</section>
+<section id="id29">
+<h4>Returns:<a class="headerlink" href="#id29" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>float</dt><dd><p>The RMS fluctuation sigma.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cctoolkit.cosmology.CosmologyCalculator.vfv">
+<span class="sig-name descname"><span class="pre">vfv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_finder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'a1':</span> <span class="pre">0.7962,</span> <span class="pre">'a2':</span> <span class="pre">0.1449,</span> <span class="pre">'az':</span> <span class="pre">-0.0658,</span> <span class="pre">'p1':</span> <span class="pre">-0.5612,</span> <span class="pre">'p2':</span> <span class="pre">-0.4743,</span> <span class="pre">'q1':</span> <span class="pre">0.3688,</span> <span class="pre">'q2':</span> <span class="pre">-0.2804,</span> <span class="pre">'qz':</span> <span class="pre">0.0251}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/cosmology.html#CosmologyCalculator.vfv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.cosmology.CosmologyCalculator.vfv" title="Link to this definition"></a></dt>
+<dd><p>Calculate the multiplicity function, defined as νf(ν), where ν is the peak-height, as well as 
+related variables for a given mass and redshift.</p>
+<section id="id30">
+<h4>Parameters:<a class="headerlink" href="#id30" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>M<span class="classifier">np.ndarray</span></dt><dd><p>Mass of the halos in solar masses over h.</p>
+</dd>
+<dt>z<span class="classifier">float</span></dt><dd><p>Redshift.</p>
+</dd>
+<dt>return_variables<span class="classifier">bool, optional</span></dt><dd><p>If True, returns additional intermediate variables used in the calculation.
+If False, returns only the multiplicity function. Default is False.</p>
+</dd>
+<dt>halo_finder<span class="classifier">str, optional</span></dt><dd><p>Descriptor for the best-fit values for the mass function parameters.
+Default is <cite>ROCKSTAR</cite>. Options are: <cite>AHF</cite>, <cite>ROCKSTAR</cite>, <cite>SUBFIND</cite>, and <cite>VELOCIraptor</cite>.</p>
+</dd>
+</dl>
+</section>
+<section id="id31">
+<h4>Returns:<a class="headerlink" href="#id31" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>np.ndarray or tuple</dt><dd><p>If <cite>return_variables</cite> is False, returns an array of the multiplicity function νf(ν).
+If <cite>return_variables</cite> is True, returns a tuple containing:
+- M : Mass array
+- R : Lagrangian radius array corresponding to M
+- v : Peak-height array
+- dlnsdlnR : Derivative of log sigma with respect to log R
+- f(ν) : Multiplicity function values</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+</section>
+<section id="module-cctoolkit.bias">
+<span id="bias"></span><h2>bias<a class="headerlink" href="#module-cctoolkit.bias" title="Link to this heading"></a></h2>
+<p>bias.py</p>
+<p>This module contains functions for calculating the halo bias, including a correction
+model for the Peak Background Split (PBS) prescription, as described in the provided 
+cosmological study. The correction accounts for dependencies on Omega_m(z), the slope 
+of the power spectrum, and the clustering amplitude S_8.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cctoolkit.bias.bias_correction_PBS">
+<span class="sig-prename descclassname"><span class="pre">cctoolkit.bias.</span></span><span class="sig-name descname"><span class="pre">bias_correction_PBS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Omega_m_z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dlnsigma_dlnR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0929</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.173</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-0.0372</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/bias.html#bias_correction_PBS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.bias.bias_correction_PBS" title="Link to this definition"></a></dt>
+<dd><p>Compute the correction factor for the linear halo bias based on the PBS prescription.</p>
+<section id="id32">
+<h3>Parameters:<a class="headerlink" href="#id32" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>Omega_m_z<span class="classifier">float</span></dt><dd><p>The matter density parameter at redshift z.</p>
+</dd>
+<dt>dlnsigma_dlnR<span class="classifier">float</span></dt><dd><p>The logarithmic derivative of the variance with respect to the radius.</p>
+</dd>
+<dt>S8<span class="classifier">float</span></dt><dd><p>The clustering amplitude parameter.</p>
+</dd>
+</dl>
+</section>
+<section id="id33">
+<h3>Returns:<a class="headerlink" href="#id33" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>float</dt><dd><p>The correction factor for the halo bias.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cctoolkit.bias.corrected_bias">
+<span class="sig-prename descclassname"><span class="pre">cctoolkit.bias.</span></span><span class="sig-name descname"><span class="pre">corrected_bias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b_PBS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega_m_z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dlnsigma_dlnR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/bias.html#corrected_bias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.bias.corrected_bias" title="Link to this definition"></a></dt>
+<dd><p>Calculate the corrected linear halo bias using the PBS prediction and the correction factor.</p>
+<section id="id34">
+<h3>Parameters:<a class="headerlink" href="#id34" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>b_PBS<span class="classifier">float</span></dt><dd><p>The linear halo bias predicted by the PBS model.</p>
+</dd>
+<dt>Omega_m_z<span class="classifier">float</span></dt><dd><p>The matter density parameter at redshift z.</p>
+</dd>
+<dt>dlnsigma_dlnR<span class="classifier">float</span></dt><dd><p>The logarithmic derivative of the variance with respect to the radius.</p>
+</dd>
+<dt>S8<span class="classifier">float</span></dt><dd><p>The clustering amplitude parameter.</p>
+</dd>
+</dl>
+</section>
+<section id="id35">
+<h3>Returns:<a class="headerlink" href="#id35" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>float</dt><dd><p>The corrected linear halo bias.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+<section id="module-cctoolkit.hmf">
+<span id="hmf"></span><h2>hmf<a class="headerlink" href="#module-cctoolkit.hmf" title="Link to this heading"></a></h2>
+<p>hmf.py</p>
+<p>This module contains functions and data related to the Halo Mass Function (HMF),
+including the multiplicity function and best-fit parameters for different halo finders.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cctoolkit.hmf.multiplicity_function">
+<span class="sig-prename descclassname"><span class="pre">cctoolkit.hmf.</span></span><span class="sig-name descname"><span class="pre">multiplicity_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peak_height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dlns_dlnR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega_m_z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">best_fit_values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/hmf.html#multiplicity_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.hmf.multiplicity_function" title="Link to this definition"></a></dt>
+<dd><p>Calculate the multiplicity function for a given peak height, slope of the power-spectrum,
+and cosmological parameters.</p>
+<section id="id36">
+<h3>Parameters:<a class="headerlink" href="#id36" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>peak_height<span class="classifier">float</span></dt><dd><p>The peak height (nu).</p>
+</dd>
+<dt>dlns_dlnR<span class="classifier">float</span></dt><dd><p>The logarithmic slope of the variance with respect to the radius.</p>
+</dd>
+<dt>Omega_m_z<span class="classifier">float</span></dt><dd><p>The matter density parameter at redshift z.</p>
+</dd>
+<dt>best_fit_values<span class="classifier">dict</span></dt><dd><p>Dictionary containing the best-fit parameters for the chosen halo finder.</p>
+</dd>
+</dl>
+</section>
+<section id="id37">
+<h3>Returns:<a class="headerlink" href="#id37" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>float</dt><dd><p>The value of the multiplicity function.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+<section id="module-cctoolkit.utils">
+<span id="utils"></span><h2>utils<a class="headerlink" href="#module-cctoolkit.utils" title="Link to this heading"></a></h2>
+<p>utils.py</p>
+<p>This module can contain utility functions or constants that may be useful
+across the package.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cctoolkit.utils.compute_sigma8_norm">
+<span class="sig-prename descclassname"><span class="pre">cctoolkit.utils.</span></span><span class="sig-name descname"><span class="pre">compute_sigma8_norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/utils.html#compute_sigma8_norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.utils.compute_sigma8_norm" title="Link to this definition"></a></dt>
+<dd><p>Normalize the dimensionless power spectrum to the given sigma8.</p>
+<section id="id38">
+<h3>Parameters:<a class="headerlink" href="#id38" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>k<span class="classifier">np.ndarray</span></dt><dd><p>Wavenumber array.</p>
+</dd>
+<dt>Dk<span class="classifier">np.ndarray</span></dt><dd><p>Dimensionless power spectrum array.</p>
+</dd>
+<dt>sigma8<span class="classifier">float</span></dt><dd><p>The value of sigma8.</p>
+</dd>
+</dl>
+</section>
+<section id="id39">
+<h3>Returns:<a class="headerlink" href="#id39" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>float</dt><dd><p>The normalization factor for the power spectrum.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cctoolkit.utils.d_s_given_Dk">
+<span class="sig-prename descclassname"><span class="pre">cctoolkit.utils.</span></span><span class="sig-name descname"><span class="pre">d_s_given_Dk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dk</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/utils.html#d_s_given_Dk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.utils.d_s_given_Dk" title="Link to this definition"></a></dt>
+<dd><p>Compute the derivative of sigma_r with respect to r.</p>
+<section id="id40">
+<h3>Parameters:<a class="headerlink" href="#id40" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>r<span class="classifier">float</span></dt><dd><p>Radius of the spherical top-hat window.</p>
+</dd>
+<dt>k<span class="classifier">np.ndarray</span></dt><dd><p>Wavenumber array.</p>
+</dd>
+<dt>Dk<span class="classifier">np.ndarray</span></dt><dd><p>Dimensionless power spectrum array.</p>
+</dd>
+</dl>
+</section>
+<section id="id41">
+<h3>Returns:<a class="headerlink" href="#id41" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>float</dt><dd><p>The derivative of sigma_r with respect to r.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cctoolkit.utils.d_s_rsq_integrand_given_Dk">
+<span class="sig-prename descclassname"><span class="pre">cctoolkit.utils.</span></span><span class="sig-name descname"><span class="pre">d_s_rsq_integrand_given_Dk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dk</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/utils.html#d_s_rsq_integrand_given_Dk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.utils.d_s_rsq_integrand_given_Dk" title="Link to this definition"></a></dt>
+<dd><p>Integrand for the derivative of sigma_r^2 with respect to r.</p>
+<section id="id42">
+<h3>Parameters:<a class="headerlink" href="#id42" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>r<span class="classifier">float</span></dt><dd><p>Radius of the spherical top-hat window.</p>
+</dd>
+<dt>k<span class="classifier">np.ndarray</span></dt><dd><p>Wavenumber array.</p>
+</dd>
+<dt>Dk<span class="classifier">np.ndarray</span></dt><dd><p>Dimensionless power spectrum array.</p>
+</dd>
+</dl>
+</section>
+<section id="id43">
+<h3>Returns:<a class="headerlink" href="#id43" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>np.ndarray</dt><dd><p>The integrand for the derivative of sigma_r^2 with respect to r.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cctoolkit.utils.dw_tophat_sq_dr">
+<span class="sig-prename descclassname"><span class="pre">cctoolkit.utils.</span></span><span class="sig-name descname"><span class="pre">dw_tophat_sq_dr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/utils.html#dw_tophat_sq_dr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.utils.dw_tophat_sq_dr" title="Link to this definition"></a></dt>
+<dd><p>Derivative of the square of the Fourier Transform of the top-hat function with respect to r.</p>
+<section id="id44">
+<h3>Parameters:<a class="headerlink" href="#id44" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>r<span class="classifier">float</span></dt><dd><p>Radius of the spherical top-hat window.</p>
+</dd>
+<dt>k<span class="classifier">float or np.ndarray</span></dt><dd><p>Wavenumber(s).</p>
+</dd>
+</dl>
+</section>
+<section id="id45">
+<h3>Returns:<a class="headerlink" href="#id45" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>float or np.ndarray</dt><dd><p>The derivative with respect to r.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cctoolkit.utils.s_rsq_integrand_given_Dk">
+<span class="sig-prename descclassname"><span class="pre">cctoolkit.utils.</span></span><span class="sig-name descname"><span class="pre">s_rsq_integrand_given_Dk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dk</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/utils.html#s_rsq_integrand_given_Dk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.utils.s_rsq_integrand_given_Dk" title="Link to this definition"></a></dt>
+<dd><p>Integrand for the calculation of sigma_r^2.</p>
+<section id="id46">
+<h3>Parameters:<a class="headerlink" href="#id46" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>r<span class="classifier">float</span></dt><dd><p>Radius of the spherical top-hat window.</p>
+</dd>
+<dt>k<span class="classifier">np.ndarray</span></dt><dd><p>Wavenumber array.</p>
+</dd>
+<dt>Dk<span class="classifier">np.ndarray</span></dt><dd><p>Dimensionless power spectrum array.</p>
+</dd>
+</dl>
+</section>
+<section id="id47">
+<h3>Returns:<a class="headerlink" href="#id47" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>np.ndarray</dt><dd><p>The integrand for sigma_r^2.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cctoolkit.utils.ssq_given_Dk">
+<span class="sig-prename descclassname"><span class="pre">cctoolkit.utils.</span></span><span class="sig-name descname"><span class="pre">ssq_given_Dk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dk</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/utils.html#ssq_given_Dk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.utils.ssq_given_Dk" title="Link to this definition"></a></dt>
+<dd><p>Compute sigma_r^2 for a given radius and power spectrum.</p>
+<section id="id48">
+<h3>Parameters:<a class="headerlink" href="#id48" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>r<span class="classifier">float</span></dt><dd><p>Radius of the spherical top-hat window.</p>
+</dd>
+<dt>k<span class="classifier">np.ndarray</span></dt><dd><p>Wavenumber array.</p>
+</dd>
+<dt>Dk<span class="classifier">np.ndarray</span></dt><dd><p>Dimensionless power spectrum array.</p>
+</dd>
+</dl>
+</section>
+<section id="id49">
+<h3>Returns:<a class="headerlink" href="#id49" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>float</dt><dd><p>The value of sigma_r^2.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cctoolkit.utils.w_tophat">
+<span class="sig-prename descclassname"><span class="pre">cctoolkit.utils.</span></span><span class="sig-name descname"><span class="pre">w_tophat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cctoolkit/utils.html#w_tophat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cctoolkit.utils.w_tophat" title="Link to this definition"></a></dt>
+<dd><p>Fourier Transform of the spherical top-hat function.</p>
+<section id="id50">
+<h3>Parameters:<a class="headerlink" href="#id50" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>r<span class="classifier">float</span></dt><dd><p>Radius of the spherical top-hat window.</p>
+</dd>
+<dt>k<span class="classifier">float or np.ndarray</span></dt><dd><p>Wavenumber(s).</p>
+</dd>
+</dl>
+</section>
+<section id="id51">
+<h3>Returns:<a class="headerlink" href="#id51" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>float or np.ndarray</dt><dd><p>The Fourier Transform of the top-hat function.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="CCToolkit Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tiago Castro.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
