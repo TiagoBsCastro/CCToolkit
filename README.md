@@ -74,8 +74,10 @@ import matplotlib.pyplot as plt
 masses = np.logspace(13, 15.5, num=100)
 hmf = cosmo_calc.dndlnM(masses, 0)
 plt.loglog(masses, hmf)
+{% raw %}
 plt.xlabel(r"$M_{\rm vir}\,[M_\odot h^{-1}]$")
 plt.ylabel(r"$\frac{{\rm d} n}{{\rm d} \log M}\,[{\rm Mpc}^{-3} h^{3}]$")
+{% endraw %}
 plt.show()
 ```
 
@@ -86,12 +88,15 @@ Compute the linear halo bias or the at redshift z = 0 for a given mass. CCTools 
 ```python
 pbs = cosmo_calc.pbs_bias(masses, 0)
 bias = cosmo_calc.bias(masses, 0)
+
+{% raw %}
 plt.loglog(masses, pbs, label=r'${\rm PBS}$')
 plt.loglog(masses, bias, label=r'${\rm Castro\, et\,al.\,2024}$')
 plt.xlabel(r"$M_{\rm vir}\,[M_\odot h^{-1}]$")
 plt.ylabel(r"$b(M)$")
 plt.legend()
 plt.show()
+{% endraw %}
 ```
 
 ## Documentation
