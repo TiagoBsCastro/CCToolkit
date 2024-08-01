@@ -17,8 +17,8 @@ CCToolkit is a Python package designed for Cluster Cosmology calculations, inclu
 ## Features
 
 - **Cosmological Calculations**: Easily compute various cosmological quantities, including background quantities and power spectra.
-- **Halo Mass Function (HMF)**: Calculate the multiplicity function and HMF parameters for different halo finders based on the model presented in Castro et al. 2022.
-- **Halo Bias**: Includes functions to compute the linear halo bias, with corrections based on the Peak Background Split (PBS) model presented in Castro et al. 2024.
+- **Halo Mass Function (HMF)**: Implements the multiplicity function and HMF parameters for different halo finders based on the model presented in [Castro et al. 2023](https://inspirehep.net/literature/2132031).
+- **Halo Bias**: Inplements the functions to compute the linear halo bias, with corrections based on the Peak Background Split (PBS) model presented in Castro et al. 2024.
 - **Utility Functions**: Provides useful utilities for the manipulation of the power spectrum.
 
 ## Installation
@@ -65,7 +65,7 @@ cosmo_calc = CosmologyCalculator(params)
 
 ### Halo Mass Function
 
-Calculate the halo mass function for a range of masses:
+Calculate the halo mass function for a range of masses following [Castro et al. 2022](https://inspirehep.net/literature/2132031):
 
 ```python
 import numpy as np
