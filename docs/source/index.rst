@@ -16,7 +16,7 @@ Features
 ========
 
 - **Cosmological Calculations**: Easily compute various cosmological quantities, including background quantities and power spectra.
-- **Halo Mass Function (HMF)**: Calculate the multiplicity function and HMF parameters for different halo finders based on the model presented in `Castro et al. 2022 <https://inspirehep.net/literature/2132031>`_.
+- **Halo Mass Function (HMF)**: Calculate the multiplicity function and HMF parameters for different halo finders based on the model presented in `Castro et al. 2023 <https://inspirehep.net/literature/2132031>`_.
 - **Halo Bias**: Includes functions to compute the linear halo bias, with corrections based on the Peak Background Split (PBS) model presented in Castro et al. 2024.
 - **Utility Functions**: Provides useful utilities for the manipulation of the power spectrum.
 
