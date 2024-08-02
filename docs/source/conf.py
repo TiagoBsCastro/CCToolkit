@@ -34,7 +34,9 @@ language = 'en'
 
 import os
 import sys
+# Add the cctools package to the sys.path
 sys.path.insert(0, os.path.abspath('../../'))
+sys.path.insert(0, os.path.abspath('../../cctools'))
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
