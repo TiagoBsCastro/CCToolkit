@@ -1,10 +1,13 @@
 # CCToolkit
 
+<img src="./cctoolkit.png" width="440" alt="Logo">
+
 [![Build Status](https://github.com/TiagoBsCastro/CCToolkit/actions/workflows/build.yml/badge.svg)](https://github.com/TiagoBsCastro/CCToolkit/actions)
 [![Documentation Status](https://readthedocs.org/projects/cctoolkit/badge/?version=latest)](https://cctoolkit.readthedocs.io/en/latest/?badge=latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub last commit](https://img.shields.io/github/last-commit/TiagoBsCastro/CCToolkit.svg)](https://github.com/TiagoBsCastro/CCToolkit/commits/main)
 
+<div align="justify">
 
 CCToolkit is a Python package designed for Cluster Cosmology calculations, including handling cosmological parameters, power spectrum computations, halo mass functions, and halo bias. It integrates with the CAMB library to deliver precise cosmological data processing.
 
@@ -114,3 +117,5 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Acknowledgements
 
 This package relies on the CAMB library for cosmological calculations. We also acknowledge the authors of the various halo finder tools whose best-fit parameters are implemented in this package.
+
+</div>
