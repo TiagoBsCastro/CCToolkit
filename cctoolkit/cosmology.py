@@ -90,15 +90,15 @@ class CosmologyCalculator:
     - The halo finder parameters must be provided correctly to ensure accurate mass function and bias calculations.
     """
 
-    def __init__(self, params, power_spectrum=None, zmax=2.0, nz=100, var='cdm+b'):
+    def __init__(self, params=None, power_spectrum=None, zmax=2.0, nz=100, var='cdm+b'):
         """
         Initialize the CosmologyCalculator with given cosmological parameters.
 
         Parameters:
         -----------
-        params : dict
+        params : dict, optional
             Dictionary containing the cosmological parameters, including 'H0', 'Ob0', 'Om0', 'sigma8',
-            'ns', 'As', 'tau', 'TCMB', and 'mnu'.
+            'ns', 'TCMB', 'mnu', num_massive_neutrinos, w0, and wa. Default: PICCOLO C0 cosmology.
         power_spectrum : array, optional
             Array containing the power spectrum data (k and Pk). If None, the power spectrum
             will be computed from the parameters using CAMB.
@@ -109,7 +109,6 @@ class CosmologyCalculator:
         var : str, optional
             Which variable to use to compute the matter power spectrum. Default is 'cdm+b' (no neutrinos).
         """
-        self.params = params
         self.zmax = zmax
         self.nz = nz
         self._z_vals_inv = np.linspace(0, zmax, nz)[::-1]
@@ -144,20 +143,46 @@ class CosmologyCalculator:
         if CAMBparams is None or get_results is None:
             raise ImportError("CAMB is not installed or not available.")
         
+        # Default parameters
+        _H0  = 67.321
+        _Ob0 = 0.0494
+        _Om0 = 0.3158
+        _TCMB = 2.7255
+        _mnu  = 0.06
+        _num_massive_neutrinos = 1
+        _w0 = -1.0
+        _wa = 0.0
+        _As = 2e-9
+        _ns = 0.9661
+        _s8 = 0.8102
+
+        # inflating parameters if needed
+        self.params = {'H0':params.get('H0', _H0),
+                       'Ob0':params.get('Ob0', _Ob0),
+                       'Om0':params.get('Om0', _Om0),
+                       'TCMB':params.get('TCMB', _TCMB),
+                       'mnu':params.get('mnu', _mnu),
+                       'num_massive_neutrinos':params.get('num_massive_neutrinos', _num_massive_neutrinos),
+                       'w0':params.get('w0', _w0),
+                       'wa':params.get('wa', _wa),
+                       'sigma8':params.get('sigma8', _s8),
+                       'ns':params.get('ns', _ns)}
+        params = self.params
+        
         camb_params = CAMBparams()
         camb_params.set_cosmology(
-            H0=params['H0'],
-            ombh2=params['Ob0'] * (params['H0'] / 100) ** 2,
-            omch2=(params['Om0'] - params['Ob0']) * (params['H0'] / 100) ** 2,
-            TCMB=params.get('TCMB', 2.7255),  # Default CMB temperature is 2.7255 K
-            mnu=params.get('mnu', 0.06),  # Default sum of neutrino masses in eV
-            num_massive_neutrinos=params.get('num_massive_neutrinos', 1)  # Number of massive neutrinos
+            H0=params.get('H0', _H0),
+            ombh2=params.get('Ob0', _Ob0) * (params.get('H0', _H0) / 100) ** 2,
+            omch2=(params.get('Om0', _Om0) - params.get('Ob0', _Ob0)) * (params.get('H0', _H0) / 100) ** 2,
+            TCMB=params.get('TCMB', _TCMB),  # Default CMB temperature is 2.7255 K
+            mnu=params.get('mnu', _mnu),  # Default sum of neutrino masses in eV
+            num_massive_neutrinos=params.get('num_massive_neutrinos', _num_massive_neutrinos)  # Number of massive neutrinos
         )
-        camb_params.set_dark_energy(w=params.get('w0', -1.0), 
+        camb_params.set_dark_energy(w=params.get('w0', _w0), 
                                     cs2=1.0, 
-                                    wa=params.get('wa', 0.0), dark_energy_model='ppf')
+                                    wa=params.get('wa', _wa), dark_energy_model='ppf')
         if not background_only:
-            camb_params.InitPower.set_params(As=params.get('As', 2e-9), ns=params['ns'])
+            camb_params.InitPower.set_params(As=params.get('As', _As), ns=params.get('ns', _ns))
             camb_params.set_matter_power(redshifts=self._z_vals_inv, kmax=10.0, k_per_logint=10)
         results = get_results(camb_params)
         self._cosmo = results
@@ -165,7 +190,7 @@ class CosmologyCalculator:
         if not background_only:
             self.k, self.z_vals, Pk = results.get_matter_power_spectrum(minkh=1e-4, maxkh=10, npoints=200, var1=self._transfer_var, var2=self._transfer_var)
             self._Dk = Pk * self.k ** 3 / (2*np.pi**2)
-            self._Dk /= compute_sigma8_norm(self.k, self._Dk[0], self.params['sigma8'])
+            self._Dk /= compute_sigma8_norm(self.k, self._Dk[0], params.get('sigma8', _s8))
             self.Dk = {z: self._Dk[i] for i, z in enumerate(self.z_vals)}
 
     def _load_power_spectrum(self, power_spectrum):
