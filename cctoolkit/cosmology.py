@@ -12,6 +12,7 @@ except ImportError:
     CAMBparams = None
     get_results = None
     model = None
+from scipy.interpolate import RectBivariateSpline
 from .utils import compute_sigma8_norm, ssq_given_Dk, d_s_given_Dk
 from .hmf import multiplicity_function, best_fit_values_AHF, best_fit_values_ROCKSTAR, best_fit_values_SUBFIND, best_fit_values_VELOCIraptor
 from .bias import corrected_bias
@@ -79,6 +80,8 @@ class CosmologyCalculator:
         Calculates the PBS bias for halos of mass M at redshift z.
     bias(M, z, halo_finder='ROCKSTAR'):
         Calculates the corrected linear halo bias for given mass and redshift, using the PBS prediction and correction factors.
+    get_interpolators(M, halo_finder='ROCKSTAR')
+        Returns 2D interpolators (M or R, z) for sigma(R, z), peak-height(M, z), multiplicity-function(M, z), and bias(M, z).
 
     Notes:
     ------
@@ -178,7 +181,7 @@ class CosmologyCalculator:
         self._Dk = Pk * self.k ** 3 / (2 * np.pi**2)
         self._Dk /= compute_sigma8_norm(self.k, self._Dk, self.params['sigma8'])
         self.Dk = {0: self._Dk}
-
+    
     def delta_c(self, Om, z=None):
         """
         Calculate the critical density contrast (delta_c) using Bryan and Norman fit.
@@ -491,9 +494,8 @@ class CosmologyCalculator:
         
         M, R, v, dlnsdlnR, vfv = self.vfv(M, z, halo_finder=halo_finder, return_variables=True)
 
-        return self.critical_density(0.) * self.Omega_m(0.) * 1e10 / M * vfv * np.gradient(np.log(v), np.log(M))
+        return self.critical_density(0.) * self.Omega_m(0.) * 1e10 / M * vfv * (-1/3 * dlnsdlnR)
     
-
     def pbs_bias(self, M, z, halo_finder='ROCKSTAR', return_variables=False):
         """
         Calculate the PBS bias for halos of mass M at redshift z.
@@ -522,6 +524,8 @@ class CosmologyCalculator:
             - vfv : Multiplicity function values
             - bias : PBS bias values
         """
+        # Since we need the edges to be accurate in their derivative, let's extend the mass array
+        M = np.insert(M, [0, M.size], [0.95*M.min(), 1.05*M.max()])
         M, R, v, dlnsdlnR, vfv = self.vfv(M, z, halo_finder=halo_finder, return_variables=True)
         delta_c = self.delta_c(self.Omega_m(z))
         
@@ -531,9 +535,9 @@ class CosmologyCalculator:
         
         bias = 1 - 1/delta_c * np.gradient(np.log(vfv), np.log(v))
         if return_variables:
-            return M, R, v, dlnsdlnR, vfv, bias
+            return M[1:-1], R[1:-1], v[1:-1], dlnsdlnR[1:-1], vfv[1:-1], bias[1:-1]
         else:
-            return bias
+            return bias[1:-1]
 
     def bias(self, M, z, halo_finder='ROCKSTAR'):
         """
@@ -558,3 +562,68 @@ class CosmologyCalculator:
         S8 = self.sigma(8, 0.0) * np.sqrt(self.Omega_m(0.0)/0.3)
     
         return corrected_bias(b_pbs, Omz, dlnsdlnR, S8)
+    
+    def get_interpolators (self, M, halo_finder='ROCKSTAR'):
+        """
+        Creates 2D interpolators for various cosmological functions as a function of mass (M) or radius (R) and redshift (z).
+
+        The method computes the following:
+        - `sigma(R, z)`: The variance of the linear density field smoothed with a top-hat filter at the Lagrangian radius R.
+        - `v(M, z)`: The peak height.
+        - `vfv(M, z)`: The multiplicity function.
+        - `dndlnM(M, z)`: The differential number density of halos per logarithmic mass interval.
+        - `bias(M, z)`: The halo bias.
+
+        Each of these quantities is computed over the input mass array `M` and a set of redshift values `self.z_vals`, and then 
+        interpolated to provide smooth functions.
+
+        Parameters
+        ----------
+        M : ndarray
+            Array of halo masses (in solar masses, M_sun/h).
+        halo_finder : str, optional
+            The halo finder used for computing halo properties. Default is 'ROCKSTAR'.
+
+        Returns
+        -------
+        tuple of RectBivariateSpline
+            A tuple containing 2D interpolators (RectBivariateSpline instances) for:
+            - `sigma(R, z)`: Variance of the linear density field.
+            - `v(M, z)`: Peak height.
+            - `vfv(M, z)`: Multiplicity function.
+            - `dndlnM(M, z)`: Differential number density of halos.
+            - `bias(M, z)`: Halo bias.
+
+        Notes
+        -----
+        The interpolators are created using `scipy.interpolate.RectBivariateSpline`, which requires the input arrays to be 
+        sorted. Ensure that the input mass array `M` is sorted in ascending order.
+
+        Examples
+        --------
+        >>> masses = np.logspace(10, 15, num=100)
+        >>> interpolators = model.get_interpolators(masses)
+        >>> sigma_interp = interpolators[0]
+        >>> sigma_at_M_and_z = sigma_interp(M=1e12, z=0.5)
+        """
+
+        R      = self.lagrangian_radius(M)
+        sigma  = np.empty((M.size, self.nz))
+        v      = np.empty((M.size, self.nz))
+        vfv    = np.empty((M.size, self.nz))
+        dndlnM = np.empty((M.size, self.nz))
+        bias   = np.empty((M.size, self.nz))
+        
+        for iz, z in enumerate(self.z_vals):
+
+            sigma[:, iz]  = self.sigma(R, z)
+            v[:, iz]      = self.peak_height(M, z)
+            vfv[:, iz]    = self.vfv(M, z, halo_finder=halo_finder)
+            dndlnM[:, iz] = self.dndlnM(M, z, halo_finder=halo_finder)
+            bias[:, iz]   = self.bias(M, z, halo_finder=halo_finder)
+
+        return RectBivariateSpline(R, self.z_vals, sigma),\
+               RectBivariateSpline(M, self.z_vals, v),\
+               RectBivariateSpline(M, self.z_vals, vfv),\
+               RectBivariateSpline(M, self.z_vals, dndlnM),\
+               RectBivariateSpline(M, self.z_vals, bias)
