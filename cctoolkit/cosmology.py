@@ -109,6 +109,9 @@ class CosmologyCalculator:
         var : str, optional
             Which variable to use to compute the matter power spectrum. Default is 'cdm+b' (no neutrinos).
         """
+
+        if params is None:
+            params = {}
         self.zmax = zmax
         self.nz = nz
         self._z_vals_inv = np.linspace(0, zmax, nz)[::-1]
