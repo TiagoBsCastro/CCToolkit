@@ -54,3 +54,9 @@ Compute the linear halo bias or the at redshift z = 0 for a given mass. CCToolki
    plt.ylabel(r"$b(M)$")
    plt.legend()
    plt.show()
+
+Interpolators
+-------------
+
+CCToolkit uses CAMB on the backend to compute the cosmological quantities. This ensures robustness and precision of the power-spectrum computation even in the presence of massive neutrinos when the growth factor can not be factore out from the matter-powerspectrum.
+Therefore, the cosmological calculator is bound to the set of redshift used to initialize CAMB for the quantities that involves manipulation of the matter-powerspectrum. To overcome this limitation the method  `get_interpolators` returns bivariate spline for the mass variance `sigma(R,z)`, the `peak_heigh(M, z)`, the `multiplicity_function(M, z)`, the `dndlogM(M, z)`, and the `bias(M, z)`.
