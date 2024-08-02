@@ -429,7 +429,7 @@ class CosmologyCalculator:
         # Avoiding newaxis to create a matrix when multiplying 
         return (R.flatten() / sigma_R) * d_sigma_dR
     
-    def vfv(self, M, z, return_variables=False, halo_finder=best_fit_values_ROCKSTAR):
+    def vfv(self, M, z, return_variables=False, halo_finder='ROCKSTAR'):
         """
         Calculate the multiplicity function, defined as νf(ν), where ν is the peak-height, as well as 
         related variables for a given mass and redshift.
@@ -469,7 +469,7 @@ class CosmologyCalculator:
         if return_variables:
             return M, R, v, dlnsdlnR, multiplicity_function(v, dlnsdlnR, self.Omega_m(z), best_fits[halo_finder])
         else:
-            return multiplicity_function(v, dlnsdlnR, self.Omega_m(z), halo_finder)
+            return multiplicity_function(v, dlnsdlnR, self.Omega_m(z), best_fits[halo_finder])
 
     def dndlnM(self, M, z, halo_finder='ROCKSTAR'):
         """
