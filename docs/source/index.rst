@@ -26,4 +26,4 @@ Features
 
    installation
    examples
-   api/modules
+   modules
