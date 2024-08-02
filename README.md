@@ -33,7 +33,7 @@ CCToolkit is a Python package designed for Cluster Cosmology calculations, inclu
 To install CCToolkit clone the repository and use pip:
 
 ```bash
-git clone git@github.com:TiagoBsCastro/CCToolkit.git
+git clone https://github.com/TiagoBsCastro/CCToolkit.git
 cd CCToolkit
 python -m pip install .
 ```
