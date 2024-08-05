@@ -169,7 +169,7 @@ def delta_c(Om, z=None):
 
 def virial_Delta(Om, z=None):
     """
-    Calculate the virial overdensity (Delta_{\rm vir}) in critical density unit using Bryan and Norman fit.
+    Calculate the virial overdensity (Delta_vir) in critical density unit using Bryan and Norman fit.
 
     Parameters:
     -----------

@@ -34,7 +34,7 @@ hmf
    :show-inheritance:
 
 baryons
----
+-------
 
 .. automodule:: cctoolkit.baryons
    :members:
