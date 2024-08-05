@@ -33,6 +33,14 @@ hmf
    :undoc-members:
    :show-inheritance:
 
+baryons
+---
+
+.. automodule:: cctoolkit.baryons
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 utils
 -----
 

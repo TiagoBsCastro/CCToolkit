@@ -146,4 +146,47 @@ def compute_sigma8_norm(k, Dk, sigma8):
     s_sq = ssq_given_Dk(8, k, Dk)
     return s_sq / sigma8 ** 2
 
+def delta_c(Om, z=None):
+    """
+    Calculate the critical density contrast (delta_c) using eq. A.6 of Kitayama & Suto.
 
+    Parameters:
+    -----------
+    Om : float or callable
+        Matter density parameter. If callable, it should return Om as a function of z.
+    z : float or array-like, optional
+        Redshift at which to evaluate Om if Om is a function.
+
+    Returns:
+    --------
+    float
+        The critical density contrast delta_c.
+    """
+    if z is None:
+        return 3.0 / 20.0 * (12.0 * np.pi) ** (2.0 / 3.0) * (1.0 + 0.012299 * np.log10(Om))
+    else:
+        return 3.0 / 20.0 * (12.0 * np.pi) ** (2.0 / 3.0) * (1.0 + 0.012299 * np.log10(Om(z)))
+
+def virial_Delta(Om, z=None):
+    """
+    Calculate the virial overdensity (Delta_{\rm vir}) in critical density unit using Bryan and Norman fit.
+
+    Parameters:
+    -----------
+    Om : float or callable
+        Matter density parameter. If callable, it should return Om as a function of z.
+    z : float or array-like, optional
+        Redshift at which to evaluate Om if Om is a function.
+
+    Returns:
+    --------
+    float
+        The virial overdensity.
+    """
+    if z is None:
+        x = Om - 1.0
+    else:
+        x = Om(z) - 1
+
+    return 18 * np.pi**2 + 82.0 * x - 39.0 * x**2
+    

@@ -7,13 +7,13 @@ quantities using CAMB.
 """
 import numpy as np
 try:
-    from camb import CAMBparams, get_results, model
+    from camb import CAMBparams, get_results
 except ImportError:
     CAMBparams = None
     get_results = None
     model = None
 from scipy.interpolate import RectBivariateSpline
-from .utils import compute_sigma8_norm, ssq_given_Dk, d_s_given_Dk
+from .utils import compute_sigma8_norm, ssq_given_Dk, d_s_given_Dk, delta_c
 from .hmf import multiplicity_function, best_fit_values_AHF, best_fit_values_ROCKSTAR, best_fit_values_SUBFIND, best_fit_values_VELOCIraptor
 from .bias import corrected_bias
 
@@ -46,8 +46,6 @@ class CosmologyCalculator:
 
     Methods:
     --------
-    delta_c(Om, z=None):
-        Calculates the critical density contrast (delta_c) for a given matter density.
     get_power_spectrum(z):
         Returns the wavenumbers and dimensionless power spectrum at a given redshift.
     set_cosmology(new_params):
@@ -210,27 +208,6 @@ class CosmologyCalculator:
         self._Dk /= compute_sigma8_norm(self.k, self._Dk, self.params['sigma8'])
         self.Dk = {0: self._Dk}
     
-    def delta_c(self, Om, z=None):
-        """
-        Calculate the critical density contrast (delta_c) using Bryan and Norman fit.
-
-        Parameters:
-        -----------
-        Om : float or callable
-            Matter density parameter. If callable, it should return Om as a function of z.
-        z : float or array-like, optional
-            Redshift at which to evaluate Om if Om is a function.
-
-        Returns:
-        --------
-        float
-            The critical density contrast delta_c.
-        """
-        if z is None:
-            return 3.0 / 20.0 * (12.0 * np.pi) ** (2.0 / 3.0) * (1.0 + 0.012299 * np.log10(Om))
-        else:
-            return 3.0 / 20.0 * (12.0 * np.pi) ** (2.0 / 3.0) * (1.0 + 0.012299 * np.log10(Om(z)))
-    
     def get_power_spectrum(self, z=0):
         """
         Get the wavenumber and dimensionless power spectrum arrays at a given redshift.
@@ -391,7 +368,7 @@ class CosmologyCalculator:
             The peak-height.
         """
         Om_z = self.Omega_m(z)
-        delta_c_z = self.delta_c(Om_z)
+        delta_c_z = delta_c(Om_z)
         R = self.lagrangian_radius(M)
         sigma_R_z = self.sigma(R, z)
         return delta_c_z / sigma_R_z
@@ -555,13 +532,13 @@ class CosmologyCalculator:
         # Since we need the edges to be accurate in their derivative, let's extend the mass array
         M = np.insert(M, [0, M.size], [0.95*M.min(), 1.05*M.max()])
         M, R, v, dlnsdlnR, vfv = self.vfv(M, z, halo_finder=halo_finder, return_variables=True)
-        delta_c = self.delta_c(self.Omega_m(z))
+        _delta_c = delta_c(self.Omega_m(z))
         
         # Avoid division by zero or log of zero issues
         if np.any(v <= 0) or np.any(vfv <= 0):
             raise ValueError("Invalid values in v or vfv arrays; check input mass or redshift ranges.")
         
-        bias = 1 - 1/delta_c * np.gradient(np.log(vfv), np.log(v))
+        bias = 1 - 1/_delta_c * np.gradient(np.log(vfv), np.log(v))
         if return_variables:
             return M[1:-1], R[1:-1], v[1:-1], dlnsdlnR[1:-1], vfv[1:-1], bias[1:-1]
         else:
