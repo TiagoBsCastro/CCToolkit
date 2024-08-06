@@ -3,4 +3,5 @@ sphinx-rtd-theme
 numpy
 scipy
 camb
+matplotlib
 pytest

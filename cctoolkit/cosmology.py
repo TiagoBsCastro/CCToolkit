@@ -6,12 +6,7 @@ parameters and calculations related to the power spectrum and other cosmological
 quantities using CAMB.
 """
 import numpy as np
-try:
-    from camb import CAMBparams, get_results
-except ImportError:
-    CAMBparams = None
-    get_results = None
-    model = None
+from camb import CAMBparams, get_results
 from scipy.interpolate import RectBivariateSpline
 from .utils import *
 from .hmf import *
@@ -35,15 +30,15 @@ class CosmologyCalculator:
     Attributes:
     -----------
     params : dict
-        Cosmological parameters for the model, including 'H0', 'Ob0', 'Om0', 'sigma8', 'ns', 'TCMB', 'mnu', 'number of massive neutrinos species', 'w0', and 'wa'.
+        Cosmological parameters for the model, including 'H0', 'Ob0', 'Om0', 'sigma8' of 'As', 'ns', 'TCMB', 'mnu', 'number of massive neutrinos species', 'w0', and 'wa'.
     cosmo : object
         An instance of CAMB results, containing cosmological data.
     k : np.ndarray
         Array of wavenumbers used in the power spectrum calculations.
-    Dk : dict
-        Dictionary where keys are redshifts and values are arrays of dimensionless power spectrum values.
     z_vals : np.ndarray
         Array of redshift values used for power spectrum calculations.
+    var : str
+        Variable used to compute the matter power spectrum, default is 'cdm+b'.
 
     Methods:
     --------
@@ -79,8 +74,6 @@ class CosmologyCalculator:
         Calculates the PBS bias for halos of mass M at redshift z.
     bias(M, z, halo_finder='ROCKSTAR'):
         Calculates the corrected linear halo bias for given mass and redshift, using the PBS prediction and correction factors.
-    get_interpolators(M, halo_finder='ROCKSTAR')
-        Returns 2D interpolators (M or R, z) for sigma(R, z), peak-height(M, z), multiplicity-function(M, z), and bias(M, z).
 
     Notes:
     ------
@@ -142,8 +135,6 @@ class CosmologyCalculator:
         background_only: bool
             Whether matter power-spectrum is expected to be computed or not.
         """
-        if CAMBparams is None or get_results is None:
-            raise ImportError("CAMB is not installed or not available.")
         
         # Default parameters
         _H0  = 67.321
@@ -157,6 +148,9 @@ class CosmologyCalculator:
         _As = 2e-9
         _ns = 0.9661
         _s8 = 0.8102
+        if ('As' in params) and ('sigma8' in params):
+            raise RuntimeError('Define either `As` or `sigma8`, not both!')
+        self._ReNormBool = ('sigma8' in params) or ( ('sigma8' not in params) and ('As' not in params) )
 
         # inflating parameters if needed
         self.params = {'H0':params.get('H0', _H0),
@@ -165,9 +159,10 @@ class CosmologyCalculator:
                        'TCMB':params.get('TCMB', _TCMB),
                        'mnu':params.get('mnu', _mnu),
                        'num_massive_neutrinos':params.get('num_massive_neutrinos', _num_massive_neutrinos),
+                       'As':params.get('As', _As),
+                       'sigma8':params.get('sigma8', _s8),
                        'w0':params.get('w0', _w0),
                        'wa':params.get('wa', _wa),
-                       'sigma8':params.get('sigma8', _s8),
                        'ns':params.get('ns', _ns)}
         params = self.params
         
@@ -185,15 +180,19 @@ class CosmologyCalculator:
                                     wa=params.get('wa', _wa), dark_energy_model='ppf')
         if not background_only:
             camb_params.InitPower.set_params(As=params.get('As', _As), ns=params.get('ns', _ns))
-            camb_params.set_matter_power(redshifts=self._z_vals_inv, kmax=10.0, k_per_logint=10)
+            camb_params.WantTransfer = True
+            camb_params.set_matter_power(redshifts=self._z_vals_inv, kmax=10.0, k_per_logint=20)
         results = get_results(camb_params)
         self._cosmo = results
 
         if not background_only:
-            self.k, self.z_vals, Pk = results.get_matter_power_spectrum(minkh=1e-4, maxkh=10, npoints=200, var1=self._transfer_var, var2=self._transfer_var)
-            self._Dk = Pk * self.k ** 3 / (2*np.pi**2)
-            self._Dk /= compute_sigma8_norm(self.k, self._Dk[0], params.get('sigma8', _s8))
-            self.Dk = {z: self._Dk[i] for i, z in enumerate(self.z_vals)}
+            self._Pk, self.z_vals, self.k = results.get_matter_power_interpolator(nonlinear=False, hubble_units=True, k_hunit=True, log_interp=False,
+                                                                                  var1=self._transfer_var, var2=self._transfer_var, return_z_k=True, extrap_kmax=True)
+            self._Dk0 = self._Pk(0, np.log(self.k))[0] * self.k ** 3 / (2*np.pi**2)
+            self._Norm = compute_sigma8_norm(self.k, self._Dk0, params.get('sigma8', _s8)) if self._ReNormBool else 1.0
+            self.Pk = lambda z: self._Pk(z, np.log(self.k)) / self._Norm
+            self.Dk = lambda z: self._Pk(z, np.log(self.k)) / self._Norm * self.k ** 3 / (2*np.pi**2)
+            self.params['sigma8'] = self.sigma(8, 0)[0]
 
     def _load_power_spectrum(self, power_spectrum):
         """
@@ -207,7 +206,7 @@ class CosmologyCalculator:
         self.k, Pk = power_spectrum
         self._Dk = Pk * self.k ** 3 / (2 * np.pi**2)
         self._Dk /= compute_sigma8_norm(self.k, self._Dk, self.params['sigma8'])
-        self.Dk = {0: self._Dk}
+        self.Dk = lambda z: self._Dk
     
     def get_power_spectrum(self, z=0):
         """
@@ -223,10 +222,7 @@ class CosmologyCalculator:
         tuple
             (k, Dk) where k is the array of wavenumbers and Dk is the dimensionless power spectrum.
         """
-        if z in self.Dk:
-            return self.k, self.Dk[z]
-        else:
-            raise ValueError(f"Power spectrum for redshift z={z} not available.")
+        return self.k, self.Dk(z)
 
     def set_cosmology(self, new_params):
         """
@@ -409,7 +405,7 @@ class CosmologyCalculator:
             The RMS fluctuation sigma.
         """
         R = np.atleast_1d(R)
-        sigma_squared = ssq_given_Dk(R[:, np.newaxis], self.k, self.Dk[z])
+        sigma_squared = ssq_given_Dk(R[:, np.newaxis], self.k, self.Dk(z))
         return np.sqrt(sigma_squared)
 
     def dlnsigma_dlnR(self, R):
@@ -429,7 +425,7 @@ class CosmologyCalculator:
             The derivative dln(sigma)/dln(R).
         """
         R = np.atleast_1d(R)
-        d_sigma_dR = d_s_given_Dk(R[:, np.newaxis], self.k, self.Dk[0])
+        d_sigma_dR = d_s_given_Dk(R[:, np.newaxis], self.k, self.Dk(0))
         sigma_R = self.sigma(R, 0)
 
         # Avoiding newaxis to create a matrix when multiplying 
@@ -568,68 +564,3 @@ class CosmologyCalculator:
         S8 = self.sigma(8, 0.0) * np.sqrt(self.Omega_m(0.0)/0.3)
     
         return corrected_bias(b_pbs, Omz, dlnsdlnR, S8)
-    
-    def get_interpolators (self, M, halo_finder='ROCKSTAR'):
-        """
-        Creates 2D interpolators for various cosmological functions as a function of mass (M) or radius (R) and redshift (z).
-
-        The method computes the following:
-        - `sigma(R, z)`: The variance of the linear density field smoothed with a top-hat filter at the Lagrangian radius R.
-        - `v(M, z)`: The peak height.
-        - `vfv(M, z)`: The multiplicity function.
-        - `dndlnM(M, z)`: The differential number density of halos per logarithmic mass interval.
-        - `bias(M, z)`: The halo bias.
-
-        Each of these quantities is computed over the input mass array `M` and a set of redshift values `self.z_vals`, and then 
-        interpolated to provide smooth functions.
-
-        Parameters
-        ----------
-        M : ndarray
-            Array of halo masses (in solar masses, M_sun/h).
-        halo_finder : str, optional
-            The halo finder used for computing halo properties. Default is 'ROCKSTAR'.
-
-        Returns
-        -------
-        tuple of RectBivariateSpline
-            A tuple containing 2D interpolators (RectBivariateSpline instances) for:
-            - `sigma(R, z)`: Variance of the linear density field.
-            - `v(M, z)`: Peak height.
-            - `vfv(M, z)`: Multiplicity function.
-            - `dndlnM(M, z)`: Differential number density of halos.
-            - `bias(M, z)`: Halo bias.
-
-        Notes
-        -----
-        The interpolators are created using `scipy.interpolate.RectBivariateSpline`, which requires the input arrays to be 
-        sorted. Ensure that the input mass array `M` is sorted in ascending order.
-
-        Examples
-        --------
-        >>> masses = np.logspace(10, 15, num=100)
-        >>> interpolators = model.get_interpolators(masses)
-        >>> sigma_interp = interpolators[0]
-        >>> sigma_at_M_and_z = sigma_interp(M=1e12, z=0.5)
-        """
-
-        R      = self.lagrangian_radius(M)
-        sigma  = np.empty((M.size, self.nz))
-        v      = np.empty((M.size, self.nz))
-        vfv    = np.empty((M.size, self.nz))
-        dndlnM = np.empty((M.size, self.nz))
-        bias   = np.empty((M.size, self.nz))
-        
-        for iz, z in enumerate(self.z_vals):
-
-            sigma[:, iz]  = self.sigma(R, z)
-            v[:, iz]      = self.peak_height(M, z)
-            vfv[:, iz]    = self.vfv(M, z, halo_finder=halo_finder)
-            dndlnM[:, iz] = self.dndlnM(M, z, halo_finder=halo_finder)
-            bias[:, iz]   = self.bias(M, z, halo_finder=halo_finder)
-
-        return RectBivariateSpline(R, self.z_vals, sigma),\
-               RectBivariateSpline(M, self.z_vals, v),\
-               RectBivariateSpline(M, self.z_vals, vfv),\
-               RectBivariateSpline(M, self.z_vals, dndlnM),\
-               RectBivariateSpline(M, self.z_vals, bias)

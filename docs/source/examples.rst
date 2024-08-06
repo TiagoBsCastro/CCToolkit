@@ -55,22 +55,3 @@ Compute the linear halo bias or the at redshift z = 0 for a given mass. CCToolki
    plt.legend()
    plt.show()
 
-Interpolators
--------------
-
-CCToolkit leverages CAMB for computing cosmological quantities, ensuring robust and precise power spectrum calculations. This is particularly crucial when considering the effects of massive neutrinos, where the growth factor cannot be easily separated from the matter power spectrum. Consequently, the cosmological calculations are tied to the set of redshifts used to initialize CAMB, which can be a limitation when analyzing quantities dependent on the matter power spectrum.
-
-To address this limitation, the `get_interpolators` method provides bivariate spline interpolators for several key quantities. These interpolators allow smooth evaluations over continuous values of mass and redshift beyond the discrete set used in CAMB. The returned interpolators include:
-
-- **Mass variance, `sigma(R, z)`**: Variance of the linear density field smoothed with a top-hat filter at radius `R(M)`.
-- **Peak height, `v(M, z)`**: A measure of the peak height in the density field.
-- **Multiplicity function, `vfv(M, z)`**: The multiplicity function representing the fraction of mass in collapsed objects.
-- **Differential number density, `dndlogM(M, z)`**: Number density of halos per logarithmic mass interval.
-- **Halo bias, `bias(M, z)`**: Bias parameter of halos as a function of mass and redshift.
-
-Below is an example of how to use the `get_interpolators` method:
-
-.. code-block:: python
-
-   sigma, v, vfv, dndlnM, bias = cosmo_calc.get_interpolators(masses)
-
