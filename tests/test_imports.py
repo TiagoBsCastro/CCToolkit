@@ -24,3 +24,10 @@ def test_import_utils():
     except ImportError as e:
         assert False, f"Importing 'cctoolkit.utils' failed: {e}"
 
+def test_import_baryons():
+    try:
+        import cctoolkit.baryons
+    except ImportError as e:
+        assert False, f"Importing 'cctoolkit.baryons' failed: {e}"
+
+
