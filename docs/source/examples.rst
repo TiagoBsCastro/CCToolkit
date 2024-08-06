@@ -72,5 +72,5 @@ Below is an example of how to use the `get_interpolators` method:
 
 .. code-block:: python
 
-   sigma, v, vfv, dndlnM, bias = calculator_camb.get_interpolators(masses)
+   sigma, v, vfv, dndlnM, bias = cosmo_calc.get_interpolators(masses)
 

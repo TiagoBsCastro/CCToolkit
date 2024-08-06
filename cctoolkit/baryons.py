@@ -5,6 +5,8 @@ This module implements the model for the impact of baryonic effects on the masse
 and groups presented in Castro et al. 2024 (https://inspirehep.net/literature/2718844).
 """
 import numpy as np
+from scipy.optimize import fsolve
+from .utils import critical_density0, virial_Delta
 
 def baryon_fraction_magneticum(M_vir, z):
     """
@@ -23,7 +25,7 @@ def baryon_fraction_magneticum(M_vir, z):
         The mean baryon fraction inside the virial radius for Magneticum clusters.
     """
     fb_cosmic = 0.168  # Magneticum baryon fraction
-    m = np.log10(M_vir / 1e14)
+    m = np.log10(M_vir / 1e10) / 4
     gamma = 0.7008 * z - 1.7505
     delta = 0.2
     fb_mean = fb_cosmic * (m ** -gamma) * (1 + m ** (1 / delta)) ** (gamma * delta)
@@ -46,7 +48,7 @@ def baryon_fraction_tng300(M_vir, z):
         The mean baryon fraction inside the virial radius for TNG300 clusters.
     """
     fb_cosmic = 0.1573  # TNG cosmic baryon fraction
-    m = np.log10(M_vir / 1e14)
+    m = np.log10(M_vir / 1e10) / 4
     gamma = 0.4106 * z - 1.4640
     delta = 0.0397 * z ** 2 - 0.04358 * z + 0.03567
     fb_mean = fb_cosmic * (m ** -gamma) * (1 + m ** (1 / delta)) ** (gamma * delta)
@@ -88,14 +90,43 @@ def compute_dmo_mass(M_vir_hydro, z, fb_cosmic, relation='magneticum'):
     else:
         raise ValueError("Invalid relation specified. Use 'magneticum' or 'tng300'.")
 
-    delta_f = 0.045 - 0.005 * z  # Baryonic offset parameter
+    delta_f = (0.045 - 0.005 * z) * fb_cosmic  # Baryonic offset parameter
     q = 0.373  # Quasi-adiabatic parameter
 
     # Step 1: Calculate M∆,dmo using Eq. (5)
     x = (1 - fb_hydro_vir - delta_f) / (1 - fb_cosmic)
-    M_delta_dmo = M_vir_hydro * x
+    M_Delta_dmo = M_vir_hydro * x
 
     # Step 3: Calculate the DMO spherical overdensity threshold ∆ using Eq. (4) with respect to the virial Delta
     Delta_over_Delta_vir = x / (1 + q * (1 / x - 1)) ** 3
 
-    return M_delta_dmo, Delta_over_Delta_vir
+    return M_Delta_dmo, Delta_over_Delta_vir
+
+def concentration_duffy_et_al_2008 (M, z):
+
+    Avir = 7.85 
+    Bvir = -0.081
+    Cvir = -0.71
+    Mpv  = 2e12
+
+    return Avir * (M/Mpv) ** Bvir * (1+z)**Cvir
+
+def compute_rec_mass(cosmo, M_Delta_dmo, Delta, z, c=concentration_duffy_et_al_2008):
+
+    R_Delta_dmo = np.cbrt(M_Delta_dmo / (4*np.pi*critical_density0*Delta/3))
+    Delta_vir = virial_Delta(cosmo.Omega_m(z))
+    
+    # Auxiliary NFW function
+    f = lambda x, _c: np.log(1+_c*x) - _c*x/(1+_c*x)
+    # Auxiliary function to be solved
+    def fRvir (R): 
+        
+        Mvir = 4 * np.pi/3 * R**3 * critical_density0 * Delta_vir
+        cvir = c(Mvir, z)
+        c_Delta = R_Delta_dmo/R * cvir
+        
+        return M_Delta_dmo * f(R/R_Delta_dmo, c_Delta) / f(1, c_Delta) / (4*np.pi/3*critical_density0*R**3) - Delta_vir
+    
+    Rvir = fsolve(fRvir, 0.99 * R_Delta_dmo)[0]
+    
+    return (4*np.pi/3) * Rvir**3 * critical_density0 * Delta_vir

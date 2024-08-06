@@ -13,9 +13,10 @@ except ImportError:
     get_results = None
     model = None
 from scipy.interpolate import RectBivariateSpline
-from .utils import compute_sigma8_norm, ssq_given_Dk, d_s_given_Dk, delta_c
-from .hmf import multiplicity_function, best_fit_values_AHF, best_fit_values_ROCKSTAR, best_fit_values_SUBFIND, best_fit_values_VELOCIraptor
-from .bias import corrected_bias
+from .utils import *
+from .hmf import *
+from .bias import *
+from .baryons import *
 
 best_fits = {'AHF': best_fit_values_AHF,
              'ROCKSTAR': best_fit_values_ROCKSTAR,

@@ -189,4 +189,6 @@ def virial_Delta(Om, z=None):
         x = Om(z) - 1
 
     return 18 * np.pi**2 + 82.0 * x - 39.0 * x**2
+
+critical_density0 = 277536627245.708 # Msun/h / (Mpc/h)**3
     
