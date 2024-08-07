@@ -7,7 +7,8 @@ quantities using CAMB.
 """
 import numpy as np
 from camb import CAMBparams, get_results
-from scipy.interpolate import RectBivariateSpline
+from scipy.integrate import solve_ivp
+from scipy.interpolate import interp1d
 from .utils import *
 from .hmf import *
 from .bias import *
@@ -116,13 +117,12 @@ class CosmologyCalculator:
             raise RuntimeError(f"Not supported matter power-spectrum for var={var}!")
 
         if power_spectrum is not None:
-            if (self.zmax != 0) or (self.nz != 1):
-                raise RuntimeError("When using a custom power-spectrum zmax should be 0 and nz 1!\n \
-                                   Control the redshift evolution changing sigma8 accordingly.")
             self._initialize_camb(params, background_only=True)
+            self._set_growth_factor()
             self._load_power_spectrum(power_spectrum)
         else:
             self._initialize_camb(params)
+            self.growth_factor = None # If we are going to use camb as our backend we do not need growth factor
 
     def _initialize_camb(self, params, background_only=False):
         """
@@ -206,7 +206,7 @@ class CosmologyCalculator:
         self.k, Pk = power_spectrum
         self._Dk = Pk * self.k ** 3 / (2 * np.pi**2)
         self._Dk /= compute_sigma8_norm(self.k, self._Dk, self.params['sigma8'])
-        self.Dk = lambda z: self._Dk
+        self.Dk = lambda z: self._Dk * self.growth_factor(z)**2
     
     def get_power_spectrum(self, z=0):
         """
@@ -254,7 +254,7 @@ class CosmologyCalculator:
     
     def Omega_nu(self, z):
         """
-        Get the neutrino density parameter Omega_nu at a given redshift.
+        Get the massive neutrino density parameter Omega_nu at a given redshift.
 
         Parameters:
         -----------
@@ -267,6 +267,38 @@ class CosmologyCalculator:
             The neutrino density parameter Omega_nu at redshift z.
         """
         return self._cosmo.get_Omega('nu', z)
+    
+    def Omega_neutrino(self, z):
+        """
+        Get the massless neutrino density parameter Omega_neutrino at a given redshift.
+
+        Parameters:
+        -----------
+        z : float
+            Redshift.
+
+        Returns:
+        --------
+        float
+            The massless neutrino density parameter Omega_neutrino at redshift z.
+        """
+        return self._cosmo.get_Omega('neutrino', z)
+    
+    def Omega_photon(self, z):
+        """
+        Get the photon density parameter Omega_photon at a given redshift.
+
+        Parameters:
+        -----------
+        z : float
+            Redshift.
+
+        Returns:
+        --------
+        float
+            The photon density parameter Omega_neutrino at redshift z.
+        """
+        return self._cosmo.get_Omega('photon', z)
     
     def Omega_k(self, z):
         """
@@ -297,8 +329,26 @@ class CosmologyCalculator:
         --------
         float
             The dark energy density parameter Omega_DE at redshift z.
+
         """
         return self._cosmo.get_Omega('de', z)
+    
+    def wz(self, z):
+        """
+        Get the dark energy equation of state at a given redshift.
+
+        Parameters:
+        -----------
+        z : float
+            Redshift.
+
+        Returns:
+        --------
+        float
+            The dark energy equation of state at redshift z.
+
+        """
+        return self._cosmo.get_dark_energy_rho_w(1.0/(1+z))[1]
 
     def critical_density(self, z):
         """
@@ -564,3 +614,77 @@ class CosmologyCalculator:
         S8 = self.sigma(8, 0.0) * np.sqrt(self.Omega_m(0.0)/0.3)
     
         return corrected_bias(b_pbs, Omz, dlnsdlnR, S8)
+
+    def _set_growth_factor(self):
+        """
+        Solve for the growth factor with appropriate initial conditions.
+
+        The growth factor is computed based on the effective treatment described by Linder et al 2003. The method sets 
+        different initial conditions depending on the value of the cosmic microwave background temperature (TCMB). The 
+        differential equation is solved using the `solve_ivp` method from `scipy.integrate`.
+
+        The method sets the `growth_factor` attribute, which is an interpolated function of the growth factor normalized 
+        to the present day.
+
+        Notes
+        -----
+        - If `TCMB` is very low, Einstein-de Sitter (EdS) conditions are used.
+        - Otherwise, radiation-dominated era conditions are more appropriate.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+
+        Attributes
+        ----------
+        growth_factor : scipy.interpolate.interp1d
+            An interpolated function of the normalized growth factor.
+
+        References
+        ----------
+        Linder, E. V. (2003). "Exploring the expansion history of the universe." Physical Review Letters, 90(9), 091301.
+        """
+        
+        # Checking which conditions to use. If TCMB is very low, EdS conditions are better
+        if self.params['TCMB'] < 1:
+            a_init    = 1e-4
+            a_end     = 1
+            g_init    = a_init
+            dgda_init = 0
+        # Otherwise a radiation dominated era is more convenient
+        else:
+            a_init  = 1e-7
+            a_end   = 1
+            g_init    = np.log(a_init)/a_init
+            dgda_init = (1-np.log(a_init)) / a_init**2
+        y0 = [g_init, dgda_init]
+        # Defining the effective functions (Linder et al 2003)
+        a_vals  = np.geomspace(a_init, a_end, 1000)
+        z_vals  = 1/a_vals-1
+        deltaH2 = ( self.H(z_vals)/self.H(0) )**2 - self.Omega_m(0) / a_vals**3
+        weff    = -1 - 1/3 * np.gradient(np.log(deltaH2), np.log(a_vals))
+        Xeff    = self.Omega_m(0) / a_vals**3 / deltaH2
+
+        def growth_system(a, y):
+            g, dgda = y
+            wa = np.interp(a, a_vals, weff)
+            Xa = np.interp(a, a_vals, Xeff)
+
+            d2gda2 = - (7/2 - 3/2*wa/(1+Xa)) * dgda/a - 3/2* (1 - wa)/(1 + Xa) * g / a**2
+
+            return [dgda, d2gda2]
+        
+        # Solve the differential equation using solve_ivp
+        sol = solve_ivp(growth_system, (a_init, a_end), y0, dense_output=True)
+        # Extract the solution for g
+        g = sol.y[0]
+        g = g/g[-1]
+        a = sol.t[::-1]
+        z = 1/a - 1
+        g = g[::-1]
+
+        self.growth_factor = interp1d(z[z<200], (g*a)[z<200], kind='quadratic')
