@@ -31,9 +31,7 @@ class CosmologyCalculator:
     Attributes:
     -----------
     params : dict
-        Cosmological parameters for the model, including 'H0', 'Ob0', 'Om0', 'sigma8' of 'As', 'ns', 'TCMB', 'mnu', 'number of massive neutrinos species', 'w0', and 'wa'.
-    cosmo : object
-        An instance of CAMB results, containing cosmological data.
+        Cosmological parameters for the model, including 'H0', 'Ob0', 'Om0', 'sigma8' or 'As', 'ns', 'TCMB', 'mnu', 'number of massive neutrinos species', 'w0', and 'wa'.
     k : np.ndarray
         Array of wavenumbers used in the power spectrum calculations.
     z_vals : np.ndarray
@@ -51,10 +49,16 @@ class CosmologyCalculator:
         Returns the matter density parameter Omega_m as a function of redshift.
     Omega_nu(z):
         Returns the neutrino density parameter Omega_nu as a function of redshift.
+    Omega_neutrino(z):
+        Returns the massless neutrino density parameter Omega_neutrino as a function of redshift.
+    Omega_photon(z):
+        Returns the photon density parameter Omega_photon as a function of redshift.
     Omega_k(z):
         Returns the curvature density parameter Omega_k as a function of redshift.
     Omega_DE(z):
         Returns the dark energy density parameter Omega_DE as a function of redshift.
+    wz(z):
+        Returns the dark energy equation of state at a given redshift.
     critical_density(z):
         Returns the critical density at a given redshift.
     H(z):
@@ -67,7 +71,7 @@ class CosmologyCalculator:
         Calculates the RMS fluctuation sigma(R, z) for a given radius and redshift.
     dlnsigma_dlnR(R):
         Calculates the derivative of the logarithm of sigma with respect to the logarithm of R.
-    vfv(M, z, return_variables=False, halo_finder=best_fit_values_ROCKSTAR):
+    vfv(M, z, return_variables=False, halo_finder='ROCKSTAR'):
         Calculates the multiplicity function νf(ν) and related variables for a given mass and redshift.
     dndlnM(M, z, halo_finder='ROCKSTAR'):
         Calculates the halo mass function dn/dlnM, representing the number density of halos per logarithmic mass interval.
