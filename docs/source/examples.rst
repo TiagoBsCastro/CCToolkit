@@ -55,7 +55,7 @@ Compute the linear halo bias or the at redshift z = 0 for a given mass. CCToolki
    plt.legend()
    plt.show()
 
-Impact of Baryons on Cluster and Groups masses
+Impact of Baryons on Cluster and Group masses
 ----------------------------------------------
 
 Compute the dark-matter only equivalent of a hydro-dynamic simulated object. CCToolkit can compute both the dark-matter only mass at the threshold of equivalence according to the quasi-adibatic model presented in Castro et al. 2024b but also to convert this to the virial definition assuming a concentration mass relation. For any realistic feedback mechanism, the last step is not very sensitive to the assumed mass-concentration relation. The assumed mass-concentration relation is given by Duffy et al. 2008.

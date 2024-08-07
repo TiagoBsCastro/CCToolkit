@@ -119,8 +119,8 @@ class CosmologyCalculator:
             if (self.zmax != 0) or (self.nz != 1):
                 raise RuntimeError("When using a custom power-spectrum zmax should be 0 and nz 1!\n \
                                    Control the redshift evolution changing sigma8 accordingly.")
-            self._load_power_spectrum(power_spectrum)
             self._initialize_camb(params, background_only=True)
+            self._load_power_spectrum(power_spectrum)
         else:
             self._initialize_camb(params)
 

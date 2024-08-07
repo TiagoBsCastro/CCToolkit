@@ -28,6 +28,11 @@ def multiplicity_function(peak_height, dlns_dlnR, Omega_m_z, best_fit_values):
     --------
     float
         The value of the multiplicity function.
+    
+    References
+    ----------
+    - [arxiv:2208.02174](https://arxiv.org/pdf/2311.01465): "Euclid preparation. XXIV. Calibration of the halo mass function in Λ(ν)CDM cosmologies",
+      Castro et al., 2023.
     """
     # Extract best-fit parameters
     a1 = best_fit_values['a1']
