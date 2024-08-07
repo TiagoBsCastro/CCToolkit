@@ -69,7 +69,7 @@ class CosmologyCalculator:
         Calculates the radius of the Lagrangian patch corresponding to a given mass M.
     sigma(R, z):
         Calculates the RMS fluctuation sigma(R, z) for a given radius and redshift.
-    dlnsigma_dlnR(R):
+    dlnsigma_dlnR(R, z):
         Calculates the derivative of the logarithm of sigma with respect to the logarithm of R.
     vfv(M, z, return_variables=False, halo_finder='ROCKSTAR'):
         Calculates the multiplicity function νf(ν) and related variables for a given mass and redshift.
@@ -462,7 +462,7 @@ class CosmologyCalculator:
         sigma_squared = ssq_given_Dk(R[:, np.newaxis], self.k, self.Dk(z))
         return np.sqrt(sigma_squared)
 
-    def dlnsigma_dlnR(self, R):
+    def dlnsigma_dlnR(self, R, z):
         """
         Calculate the derivative of the logarithm of sigma with respect to the logarithm of R.
 
@@ -479,8 +479,8 @@ class CosmologyCalculator:
             The derivative dln(sigma)/dln(R).
         """
         R = np.atleast_1d(R)
-        d_sigma_dR = d_s_given_Dk(R[:, np.newaxis], self.k, self.Dk(0))
-        sigma_R = self.sigma(R, 0)
+        d_sigma_dR = d_s_given_Dk(R[:, np.newaxis], self.k, self.Dk(z))
+        sigma_R = self.sigma(R, z)
 
         # Avoiding newaxis to create a matrix when multiplying 
         return (R.flatten() / sigma_R) * d_sigma_dR
@@ -520,7 +520,7 @@ class CosmologyCalculator:
             raise RuntimeError("Masses size should be at least 2 (preferrebly much more).")
         R = self.lagrangian_radius(M)
         v = self.peak_height(M, z)
-        dlnsdlnR = self.dlnsigma_dlnR(R)
+        dlnsdlnR = self.dlnsigma_dlnR(R, z)
 
         if return_variables:
             return M, R, v, dlnsdlnR, multiplicity_function(v, dlnsdlnR, self.Omega_m(z), best_fits[halo_finder])
