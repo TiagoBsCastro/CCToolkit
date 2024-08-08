@@ -9,7 +9,7 @@
 
 <div align="justify">
 
-CCToolkit is a Python package designed for Cluster Cosmology calculations, including handling cosmological parameters, power spectrum computations, halo mass functions, and halo bias. It integrates with the CAMB library to deliver precise cosmological data processing.
+CCToolkit is a Python package designed for Cluster Cosmology calculations. It handles cosmological parameters, power spectrum computations, halo mass functions, and halo bias and integrates with the CAMB library to deliver precise cosmological data processing.
 
 ## Table of Contents
 - [Features](#features)
@@ -25,8 +25,9 @@ CCToolkit is a Python package designed for Cluster Cosmology calculations, inclu
 
 - **Cosmological Calculations**: Easily compute various cosmological quantities, including background quantities and power spectra.
 - **Halo Mass Function (HMF)**: Implements the multiplicity function and HMF parameters for different halo finders based on the model presented in [Castro et al. 2023](https://inspirehep.net/literature/2132031).
-- **Halo Bias**: Inplements the functions to compute the linear halo bias, with corrections based on the Peak Background Split (PBS) model presented in Castro et al. 2024.
-- **Utility Functions**: Provides useful utilities for the manipulation of the power spectrum.
+- **Halo Bias**: Implements the functions to compute the linear halo bias, with corrections based on the Peak Background Split (PBS) model presented in Castro et al. in prep.
+- **Baryonic impact**: Implements the model presented in [Castro et al. 2024](https://inspirehep.net/literature/2718844) for the baryonic impact on cluster and group masses.
+- **Utility Functions**: Provides useful utilities for manipulating the power spectrum.
 
 ## Installation
 
@@ -72,7 +73,7 @@ cosmo_calc = CosmologyCalculator(params)
 
 ### Halo Mass Function
 
-Calculate the halo mass function for a range of masses following [Castro et al. 2022](https://inspirehep.net/literature/2132031):
+Calculate the halo mass function for a range of masses following [Castro et al. 2023](https://inspirehep.net/literature/2132031):
 
 ```python
 import numpy as np
@@ -88,7 +89,7 @@ plt.show()
 
 ### Halo Bias
 
-Compute the linear halo bias or the at redshift z = 0 for a given mass. CCTools can compute both the PBS prescription as well as the corrected model following Castro et al. 2024.
+CCToolkit can compute both the PBS prescription as well as the corrected model following Castro et al. in prep.
 
 ```python
 pbs = cosmo_calc.pbs_bias(masses, 0)
@@ -102,9 +103,29 @@ plt.legend()
 plt.show()
 ```
 
+### Baryonic Impact
+
+CCToolkit can compute the equivalent dark-matter-only halo mass of a hydrodynamical simulated group or cluster in two simple steps:
+
+``python
+from cctoolkit import baryons
+from cctoolkit.cosmology import CosmologyCalculator
+z = 0.0
+# Magneticum cosmology
+params = {"Om0": 0.272, "Ob0": 0.272 * 0.168, "H0": 70.4, "ns": 0.963, "mnu":0, "num_massive_neutrinos": 0, "sigma8": 0.809}
+cosmo_calc = CosmologyCalculator()
+# Array of virial masses on hydro
+M = np.geomspace(1e13, 3e14)
+# Calculating the equivalent DMO mass at the threshold of equivalence according to the quasi-adiabatic model
+M_Delta_dmo, Delta = baryons.compute_dmo_mass(M, z, 0.168)
+Delta *= cctoolkit.utils.virial_Delta(cosmo_calc.Omega_m(z))
+# Converting to the virial mass
+mdmo = [baryons.compute_rec_mass(cosmo_calc, m, d, z) for m, d in zip(M_Delta_dmo, Delta)]
+```
+
 ## Documentation
 
-For detailed documentation and API reference, please visit [CCToolkit Documentation](https://cctoolkit.readthedocs.io).
+Please visit [CCToolkit Documentation](https://cctoolkit.readthedocs.io) for detailed documentation and API reference.
 
 ## Contributing
 
@@ -116,6 +137,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Acknowledgements
 
-This package relies on the CAMB library for cosmological calculations. We also acknowledge the authors of the various halo finder tools whose best-fit parameters are implemented in this package.
+This package relies on the CAMB library for cosmological calculations. We also acknowledge the authors of the various halo finder software used to produce the best-fit parameters implemented in this package.
 
 </div>
