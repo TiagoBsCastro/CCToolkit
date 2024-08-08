@@ -208,8 +208,10 @@ class CosmologyCalculator:
             Path to the file containing the power spectrum data (k and Pk).
         """
         self.k, Pk = power_spectrum
-        self._Dk = Pk * self.k ** 3 / (2 * np.pi**2)
+        self._Dk = Pk.flatten() * self.k ** 3 / (2 * np.pi**2)
         self._Dk /= compute_sigma8_norm(self.k, self._Dk, self.params['sigma8'])
+        # Reshaping to have the same dimensions as camb
+        self._Dk = self._Dk.reshape(1, self._Dk.size)
         self.Dk = lambda z: self._Dk * self.growth_factor(z)**2
     
     def get_power_spectrum(self, z=0):
