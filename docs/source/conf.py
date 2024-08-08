@@ -42,6 +42,8 @@ sys.path.insert(0, os.path.abspath('../../'))
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+# Path to the logo
+html_logo = '_static/cctoolkit.png'
 
 # Add any paths that contain custom CSS files here,
 # relative to the html_static_path.
