@@ -108,6 +108,7 @@ plt.show()
 CCToolkit can compute the equivalent dark-matter-only halo mass of a hydrodynamical simulated group or cluster in two simple steps:
 
 ```python
+import cctoolkit
 from cctoolkit import baryons
 from cctoolkit.cosmology import CosmologyCalculator
 z = 0.0

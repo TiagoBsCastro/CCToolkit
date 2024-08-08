@@ -62,6 +62,7 @@ Compute the dark-matter only equivalent of a hydro-dynamic simulated object. CCT
 
 .. code-block:: python
 
+    import cctoolkit
     from cctoolkit import baryons
     from cctoolkit.cosmology import CosmologyCalculator
     z = 0.0
@@ -110,11 +111,7 @@ Notice that simulations frequently ignores the radiation contribution. As we use
 
     from cctoolkit.cosmology import CosmologyCalculator
   
-    params = {'flat': True, 'H0': 67.321, 'Om0': 0.3158, 'Ob0': 0.0494, 'sigma8': 0.8102, 'ns': 0.9661, 'mnu': 0, 'num_massive_neutrinos': 0}
-    cosmo = cosmology.setCosmology("C0", params)
-    params['mnu'] = 0
-    params['num_massive_neutrinos'] = 0
-    params['TCMB'] = 0.5
+    params = {'flat': True, 'H0': 67.321, 'Om0': 0.3158, 'Ob0': 0.0494, 'sigma8': 0.8102, 'ns': 0.9661, 'mnu': 0, 'num_massive_neutrinos': 0, 'TCMB': 0.5}
     cosmo_calc = CosmologyCalculator(params)
 
 When using a tabulated power-spectrum, CosmoCalculator will compute the growth factor solving Eq. (11) of `Linder and Jenkins 2003 <https://inspirehep.net/literature/618898>`__. If TCMB is lower than unity, EdS initial conditions are assumed at high-redshift. Otherwise, a radiation dominated solution is assumed.
