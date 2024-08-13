@@ -121,6 +121,8 @@ class CosmologyCalculator:
             raise RuntimeError(f"Not supported matter power-spectrum for var={var}!")
 
         if power_spectrum is not None:
+            if 'As' in params:
+                raise RuntimeError(f"Only sigma8 is supported (not As) when passing a tabulated P(k)!")
             self._initialize_camb(params, background_only=True)
             self._set_growth_factor()
             self._load_power_spectrum(power_spectrum)
