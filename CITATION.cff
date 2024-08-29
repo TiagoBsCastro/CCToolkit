@@ -20,8 +20,8 @@ keywords:
   - "CAMB"
 license: "MIT"
 repository-code: "https://github.com/TiagoBsCastro/CCToolkit"
-version: "1.0.0"  # Update to the actual version if different
-doi: "10.5281/zenodo.1234567"  # Replace with actual DOI if available
+version: "1.0.1"  # Update to the actual version if different
+doi: "10.5281/zenodo.13479346"  # Replace with actual DOI if available
 url: "https://github.com/TiagoBsCastro/CCToolkit"
 date-released: "2024-08-29"  # Update to the actual release date
 abstract: "CCToolkit is a Python package designed for Cluster Cosmology calculations. It handles cosmological parameters, power spectrum computations, halo mass functions, and halo bias and integrates with the CAMB library to deliver precise cosmological data processing. Key features include cosmological calculations, halo mass function computations, halo bias models, baryonic impact analysis, and utility functions for manipulating the power spectrum."
