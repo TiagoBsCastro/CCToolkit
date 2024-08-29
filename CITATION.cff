@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use CCToolkit in your research, please cite it using the following metadata."
+title: "CCToolkit: A Python Package for Cluster Cosmology Calculations"
+authors:
+  - family-names: "Castro"
+    given-names: "Tiago"
+    affiliation: >
+      INAF-Osservatorio Astronomico di Trieste, Via G. B. Tiepolo 11, 34143 Trieste, Italy;
+      INFN, Sezione di Trieste, Via Valerio 2, 34127 Trieste TS, Italy;
+      IFPU, Institute for Fundamental Physics of the Universe, via Beirut 2, 34151 Trieste, Italy;
+      ICSC - Centro Nazionale di Ricerca in High Performance Computing, Big Data e Quantum Computing, Via Magnanelli 2, Bologna, Italy
+  - family-names: "Fumagalli"
+    given-names: "Alessandra"
+    affiliation: >
+      Ludwig-Maximilians-University, Schellingstrasse 4, 80799 Munich, Germany;
+      IFPU, Institute for Fundamental Physics of the Universe, via Beirut 2, 34151 Trieste, Italy
+keywords:
+  - cosmology
+  - cluster cosmology
+  - halo mass function
+  - halo bias
+  - baryonic impact
+  - Python
+  - CAMB
+license: "MIT"
+repository-code: "https://github.com/TiagoBsCastro/CCToolkit"
+version: "1.0.1"
+doi: "10.5281/zenodo.13479346"  
+url: "https://github.com/TiagoBsCastro/CCToolkit"
+date-released: "2024-08-29"  abstract: >
+  CCToolkit is a Python package designed for Cluster Cosmology calculations. It handles cosmological parameters, power spectrum computations, halo mass functions, and halo bias and integrates with the CAMB library to deliver precise cosmological data processing. Key features include cosmological calculations, halo mass function computations, halo bias models, baryonic impact analysis, and utility functions for manipulating the power spectrum.
