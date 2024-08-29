@@ -3,6 +3,7 @@
 <img src="./cctoolkit.png" width="440" alt="Logo">
 
 [![Build Status](https://github.com/TiagoBsCastro/CCToolkit/actions/workflows/build.yml/badge.svg)](https://github.com/TiagoBsCastro/CCToolkit/actions)
+[![DOI](https://img.shields.io/badge/DOI-10.5281/zenodo.13479345-blue.svg)](https://doi.org/10.5281/zenodo.13479345)
 [![Documentation Status](https://readthedocs.org/projects/cctoolkit/badge/?version=latest)](https://cctoolkit.readthedocs.io/en/latest/?badge=latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub last commit](https://img.shields.io/github/last-commit/TiagoBsCastro/CCToolkit.svg)](https://github.com/TiagoBsCastro/CCToolkit/commits/main)
