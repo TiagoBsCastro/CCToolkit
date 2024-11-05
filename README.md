@@ -90,7 +90,7 @@ plt.show()
 
 ### Halo Bias
 
-CCToolkit can compute both the PBS prescription as well as the corrected model following Castro et al. in prep.
+CCToolkit can compute both the PBS prescription as well as the corrected model following [Castro et al. 2024b](https://inspirehep.net/literature/2824892).
 
 ```python
 pbs = cosmo_calc.pbs_bias(masses, 0)
