@@ -58,7 +58,7 @@ Alternatively, one can specify the model in development for cosmologies with dyn
 Halo Bias
 ---------
 
-Compute the linear halo bias or the at redshift z = 0 for a given mass. CCToolkit can compute both the PBS prescription as well as the corrected model following Castro et al. in prep.
+Compute the linear halo bias or the at redshift z = 0 for a given mass. CCToolkit can compute both the PBS prescription as well as the corrected model following `Castro et al. 2024b <https://inspirehep.net/literature/2824892>`__
 
 .. code-block:: python
 
