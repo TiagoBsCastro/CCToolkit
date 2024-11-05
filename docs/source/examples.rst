@@ -9,14 +9,16 @@ To use CCToolkit, start by importing the necessary modules and initializing the 
 
    # Define cosmological parameters
    params = {
-       'H0': 70.0,                # Hubble parameter at z=0 in km/s/Mpc
-       'Ob0': 0.05,               # Baryon density parameter
-       'Om0': 0.3,                # Total matter density parameter (Ob0 + Om_c0)
-       'sigma8': 0.8,             # rms density fluctuation amplitude at 8 h^-1 Mpc
-       'ns': 0.96,                # Scalar spectral index
-       'TCMB': 2.7255,            # CMB Temperature at z=0 in K
-       'mnu': 0.06,               # Sum of neutrino masses (eV)
-       'num_massive_neutrinos': 1 # Number of massive neutrinos species
+       'H0': 70.0,                 # Hubble parameter at z=0 in km/s/Mpc
+       'Ob0': 0.05,                # Baryon density parameter
+       'Om0': 0.3,                 # Total matter density parameter (Ob0 + Om_c0)
+       'sigma8': 0.8,              # rms density fluctuation amplitude at 8 h^-1 Mpc
+       'ns': 0.96,                 # Scalar spectral index
+       'TCMB': 2.7255,             # CMB Temperature at z=0 in K
+       'mnu': 0.06,                # Sum of neutrino masses (eV)
+       'num_massive_neutrinos': 1, # Number of massive neutrinos species
+       'w0' : -1.1,                # Dark energy equation of state value today
+       'wa' : 0.8                  # Dark energy equation of state rate wrt to a
    }
 
    # Initialize the calculator
@@ -34,6 +36,20 @@ Calculate the `Castro et al. 2023 <https://inspirehep.net/literature/2132031>`__
 
    masses = np.logspace(13, 15.5, num=100)
    hmf = cosmo_calc.dndlnM(masses, 0)
+   plt.loglog(masses, hmf)
+   plt.xlabel(r"$M_{\rm vir}\,[M_\odot h^{-1}]$")
+   plt.ylabel(r"$\frac{{\rm d} n}{{\rm d} \log M}\,[{\rm Mpc}^{-3} h^{3}]$")
+   plt.show()
+
+Alternatively, one can specify the model in development for cosmologies with dynamic dark energy with:
+
+.. code-block:: python
+
+   import numpy as np
+   import matplotlib.pyplot as plt
+
+   masses = np.logspace(13, 15.5, num=100)
+   hmf = cosmo_calc.dndlnM(masses, 0, model='castro24')
    plt.loglog(masses, hmf)
    plt.xlabel(r"$M_{\rm vir}\,[M_\odot h^{-1}]$")
    plt.ylabel(r"$\frac{{\rm d} n}{{\rm d} \log M}\,[{\rm Mpc}^{-3} h^{3}]$")
@@ -105,7 +121,7 @@ The ``CosmologyCalculator`` can also receive a tabulated power-spectrum. This is
     cosmo_calc = CosmologyCalculator(params, power_spectrum=[k, Pk])
     dndlnM = cosmo_calc.dndlnM(M, 0)
 
-Notice that simulations frequently ignores the radiation contribution. As we use camb as out backend for the ``CosmologyCalculator``, we can not produce a background without radiation. However, we can make its contribution insignificant setting the CMB temperature today to an unrealistic low value.
+Notice that simulations frequently ignores the radiation contribution. As we use camb as our backend for the ``CosmologyCalculator``, we can not produce a background without radiation. However, we can make its contribution insignificant setting the CMB temperature today to an unrealistic low value.
 
 .. code-block:: python
 

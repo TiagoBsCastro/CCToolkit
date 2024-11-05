@@ -17,7 +17,8 @@ from .baryons import *
 best_fits = {'AHF': best_fit_values_AHF,
              'ROCKSTAR': best_fit_values_ROCKSTAR,
              'SUBFIND': best_fit_values_SUBFIND,
-             'VELOCIraptor': best_fit_values_VELOCIraptor}
+             'VELOCIraptor': best_fit_values_VELOCIraptor,
+             'castro24': best_fit_values_castro24}
 
 class CosmologyCalculator:
     """
@@ -71,13 +72,13 @@ class CosmologyCalculator:
         Calculates the RMS fluctuation sigma(R, z) for a given radius and redshift.
     dlnsigma_dlnR(R, z):
         Calculates the derivative of the logarithm of sigma with respect to the logarithm of R.
-    vfv(M, z, return_variables=False, halo_finder='ROCKSTAR'):
+    vfv(M, z, return_variables=False, halo_finder='ROCKSTAR', model='castro23'):
         Calculates the multiplicity function νf(ν) and related variables for a given mass and redshift.
-    dndlnM(M, z, halo_finder='ROCKSTAR'):
+    dndlnM(M, z, halo_finder='ROCKSTAR', model='castro23'):
         Calculates the halo mass function dn/dlnM, representing the number density of halos per logarithmic mass interval.
-    pbs_bias(M, z, halo_finder='ROCKSTAR', return_variables=False):
+    pbs_bias(M, z, halo_finder='ROCKSTAR', hmf_model='castro23', return_variables=False):
         Calculates the PBS bias for halos of mass M at redshift z.
-    bias(M, z, halo_finder='ROCKSTAR'):
+    bias(M, z, halo_finder='ROCKSTAR', hmf_model='castro23'):
         Calculates the corrected linear halo bias for given mass and redshift, using the PBS prediction and correction factors.
 
     Notes:
@@ -357,6 +358,23 @@ class CosmologyCalculator:
 
         """
         return self._cosmo.get_dark_energy_rho_w(1.0/(1+z))[1]
+    
+    def zta(self, z):
+        """
+        Get the turnaround redshift for a given collapse redshift z.
+
+        Parameters:
+        -----------
+        z : float
+            Redshift.
+
+        Returns:
+        --------
+        float
+            EdS solution for the turnaroudn redshift.
+
+        """
+        return (1+z)/(1/2)**(2/3) - 1
 
     def critical_density(self, z):
         """
@@ -489,7 +507,7 @@ class CosmologyCalculator:
         # Avoiding newaxis to create a matrix when multiplying 
         return (R.flatten() / sigma_R) * d_sigma_dR
     
-    def vfv(self, M, z, return_variables=False, halo_finder='ROCKSTAR'):
+    def vfv(self, M, z, return_variables=False, halo_finder='ROCKSTAR', model='castro23'):
         """
         Calculate the multiplicity function, defined as νf(ν), where ν is the peak-height, as well as 
         related variables for a given mass and redshift.
@@ -504,8 +522,11 @@ class CosmologyCalculator:
             If True, returns additional intermediate variables used in the calculation.
             If False, returns only the multiplicity function. Default is False.
         halo_finder : str, optional
-            Descriptor for the best-fit values for the mass function parameters.
+            Only used for model `castro23`. Descriptor for the best-fit values for the mass function parameters.
             Default is `ROCKSTAR`. Options are: `AHF`, `ROCKSTAR`, `SUBFIND`, and `VELOCIraptor`.
+        model : str, optional
+            Descriptor for the multiplicity function model.
+            Default is `castro23`. Options are `castro23` and `castro24`.
 
         Returns:
         --------
@@ -514,24 +535,75 @@ class CosmologyCalculator:
             If `return_variables` is True, returns a tuple containing:
             - M : Mass array
             - R : Lagrangian radius array corresponding to M
-            - v : Peak-height array
-            - dlnsdlnR : Derivative of log sigma with respect to log R
-            - f(ν) : Multiplicity function values
+            - ν : Peak-height array
+            - dlnσ/dlnR : Derivative of log sigma with respect to log R
+            - νf(ν) : Multiplicity function values
+
+        Raises:
+        -------
+        ValueError
+            If an unsupported model is specified.
+
+        Notes:
+        ------
+        For the 'castro24' model, the `halo_finder` parameter is ignored, and appropriate best-fit values are used.
         """
+        # Validate inputs
         if not isinstance(M, np.ndarray):
-            raise RuntimeError("Masses should be an instance of numpy.ndarray")
+            raise ValueError("Masses should be an instance of numpy.ndarray")
         elif M.size < 2:
-            raise RuntimeError("Masses size should be at least 2 (preferrebly much more).")
+            raise ValueError("Mass array should contain at least 2 elements.")
+        if model not in ['castro23', 'castro24']:
+            raise ValueError(f"Model '{model}' is not implemented.")
+        
+        # Compute variables
         R = self.lagrangian_radius(M)
         v = self.peak_height(M, z)
         dlnsdlnR = self.dlnsigma_dlnR(R, z)
 
-        if return_variables:
-            return M, R, v, dlnsdlnR, multiplicity_function(v, dlnsdlnR, self.Omega_m(z), best_fits[halo_finder])
+        # Access best-fit parameters
+        if model == 'castro23':
+            # Ensure halo_finder is valid
+            valid_halo_finders = ['AHF', 'ROCKSTAR', 'SUBFIND', 'VELOCIraptor']
+            if halo_finder not in valid_halo_finders:
+                raise ValueError(f"Invalid halo_finder '{halo_finder}'. Valid options are {valid_halo_finders}.")
+            best_fit_values = best_fits[halo_finder]
+        elif model == 'castro24':
+            best_fit_values = best_fits['castro24']
         else:
-            return multiplicity_function(v, dlnsdlnR, self.Omega_m(z), best_fits[halo_finder])
+            raise ValueError(f"Model '{model}' is not implemented.")
 
-    def dndlnM(self, M, z, halo_finder='ROCKSTAR'):
+        # Prepare additional parameters for castro24
+        if model == 'castro24':
+            zta = self.zta(z)
+            Omega_de_zta = self.Omega_DE(zta)
+            w_de_zta = self.wz(zta)
+            extra_params = {
+                'Omega_de_zta': Omega_de_zta,
+                'w_de_zta': w_de_zta
+            }
+        else:
+            extra_params = {
+                'Omega_de_zta': None,
+                'w_de_zta': None
+            }
+
+        # Compute multiplicity function
+        f_nu = multiplicity_function(
+            peak_height=v,
+            dlns_dlnR=dlnsdlnR,
+            Omega_m_z=self.Omega_m(z),
+            best_fit_values=best_fit_values,
+            model=model,
+            **extra_params
+        )
+
+        if return_variables:
+            return M, R, v, dlnsdlnR, f_nu
+        else:
+            return f_nu
+
+    def dndlnM(self, M, z, halo_finder='ROCKSTAR', model='castro23'):
         """
         Calculate the halo mass function, dn/dlnM, which gives the number density of halos 
         per logarithmic mass interval.
@@ -543,20 +615,47 @@ class CosmologyCalculator:
         z : float
             Redshift. 
         halo_finder : str, optional
-            Descriptor for the best-fit values for the mass function parameters.
+            Only used for model `castro23`. Descriptor for the best-fit values for the mass function parameters.
             Default is `ROCKSTAR`. Options are: `AHF`, `ROCKSTAR`, `SUBFIND`, and `VELOCIraptor`.
+        model : str, optional
+            Descriptor for the multiplicity function model.
+            Default is `castro23`. Options are `castro23` and `castro24`.
 
         Returns:
         --------
         np.ndarray
             The halo mass function dn/dlnM, with units of number density per logarithmic mass interval.
-        """
-        
-        M, R, v, dlnsdlnR, vfv = self.vfv(M, z, halo_finder=halo_finder, return_variables=True)
 
-        return self.critical_density(0.) * self.Omega_m(0.) * 1e10 / M * vfv * (-1/3 * dlnsdlnR)
+        Raises:
+        -------
+        ValueError
+            If an unsupported model is specified.
+
+        Notes:
+        ------
+        For the 'castro24' model, the `halo_finder` parameter is ignored.
+        """
+        # Validate inputs
+        if not isinstance(M, np.ndarray):
+            raise ValueError("Masses should be an instance of numpy.ndarray")
+        elif M.size < 2:
+            raise ValueError("Mass array should contain at least 2 elements.")
+        if model not in ['castro23', 'castro24']:
+            raise ValueError(f"Model '{model}' is not implemented.")
+
+        # Compute vfv and related variables
+        M, R, v, dlnsdlnR, vfv_values = self.vfv(
+            M, z, halo_finder=halo_finder, model=model, return_variables=True
+        )
+
+        # Calculate dn/dlnM
+        dn_dlnM = (
+            self.critical_density(0.0) * self.Omega_m(0.0) * 1e10 / M * vfv_values * (-1 / 3 * dlnsdlnR)
+        )
+
+        return dn_dlnM
     
-    def pbs_bias(self, M, z, halo_finder='ROCKSTAR', return_variables=False):
+    def pbs_bias(self, M, z, halo_finder='ROCKSTAR', return_variables=False, hmf_model='castro23'):
         """
         Calculate the PBS bias for halos of mass M at redshift z.
 
@@ -571,6 +670,8 @@ class CosmologyCalculator:
         return_variables : bool, optional
             If True, returns additional intermediate variables used in the calculation.
             If False, returns only the bias. Default is False.
+        hmf_model : str
+            The hmf model used for the multiplicity function. Default is 'castro23'.
 
         Returns:
         --------
@@ -586,7 +687,7 @@ class CosmologyCalculator:
         """
         # Since we need the edges to be accurate in their derivative, let's extend the mass array
         M = np.insert(M, [0, M.size], [0.95*M.min(), 1.05*M.max()])
-        M, R, v, dlnsdlnR, vfv = self.vfv(M, z, halo_finder=halo_finder, return_variables=True)
+        M, R, v, dlnsdlnR, vfv = self.vfv(M, z, halo_finder=halo_finder, return_variables=True, model=hmf_model)
         _delta_c = delta_c(self.Omega_m(z))
         
         # Avoid division by zero or log of zero issues
@@ -599,7 +700,7 @@ class CosmologyCalculator:
         else:
             return bias[1:-1]
 
-    def bias(self, M, z, halo_finder='ROCKSTAR'):
+    def bias(self, M, z, halo_finder='ROCKSTAR', hmf_model='castro23'):
         """
         Calculate the corrected linear halo bias.
 
@@ -611,13 +712,15 @@ class CosmologyCalculator:
             Redshift.
         halo_finder : str
             The halo finder used to determine the best-fit parameters. Default is 'ROCKSTAR'.
+        hmf_model : str
+            The hmf model used for the multiplicity function. Default is 'castro23'.
 
         Returns:
         --------
         np.ndarray
             The corrected linear halo bias.
         """
-        M, R, v, dlnsdlnR, vfv, b_pbs = self.pbs_bias(M, z, halo_finder=halo_finder, return_variables=True)
+        M, R, v, dlnsdlnR, vfv, b_pbs = self.pbs_bias(M, z, halo_finder=halo_finder, return_variables=True, hmf_model=hmf_model)
         Omz = self.Omega_m(z)
         S8 = self.sigma(8, 0.0) * np.sqrt(self.Omega_m(0.0)/0.3)
     
