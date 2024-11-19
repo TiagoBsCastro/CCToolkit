@@ -757,7 +757,7 @@ class CosmologyCalculator:
 
         References
         ----------
-        Linder, E. V. (2003). "Exploring the expansion history of the universe." Physical Review Letters, 90(9), 091301.
+        E. V. Linder, A. Jenkins, Cosmic structure growth and dark energy, Monthly Notices of the Royal Astronomical Society, Volume 346, Issue 2, December 2003, Pages 573–583, https://doi.org/10.1046/j.1365-2966.2003.07112.x
         """
         
         # Checking which conditions to use. If TCMB is very low, EdS conditions are better
