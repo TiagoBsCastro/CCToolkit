@@ -551,8 +551,6 @@ class CosmologyCalculator:
         # Validate inputs
         if not isinstance(M, np.ndarray):
             raise ValueError("Masses should be an instance of numpy.ndarray")
-        elif M.size < 2:
-            raise ValueError("Mass array should contain at least 2 elements.")
         if model not in ['castro23', 'castro24']:
             raise ValueError(f"Model '{model}' is not implemented.")
         
@@ -638,8 +636,6 @@ class CosmologyCalculator:
         # Validate inputs
         if not isinstance(M, np.ndarray):
             raise ValueError("Masses should be an instance of numpy.ndarray")
-        elif M.size < 2:
-            raise ValueError("Mass array should contain at least 2 elements.")
         if model not in ['castro23', 'castro24']:
             raise ValueError(f"Model '{model}' is not implemented.")
 
@@ -685,6 +681,8 @@ class CosmologyCalculator:
             - vfv : Multiplicity function values
             - bias : PBS bias values
         """
+        if M.size < 2:
+            raise ValueError("Mass array should contain at least 2 elements.")
         # Since we need the edges to be accurate in their derivative, let's extend the mass array
         M = np.insert(M, [0, M.size], [0.95*M.min(), 1.05*M.max()])
         M, R, v, dlnsdlnR, vfv = self.vfv(M, z, halo_finder=halo_finder, return_variables=True, model=hmf_model)
