@@ -33,7 +33,7 @@ jobs:
 
     - name: Archive built documentation
       if: success()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Sphinx-Docs
         path: docs/source/_build/html/
