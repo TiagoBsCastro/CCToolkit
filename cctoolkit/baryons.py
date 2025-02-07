@@ -91,7 +91,7 @@ def compute_dmo_mass(M_vir_hydro, z, fb_cosmic, relation='magneticum'):
         else:
             raise ValueError("Invalid relation specified. Use 'magneticum', 'tng300' or a custom function with identical signature.")
     elif callable(relation):
-        fb_hydro_vir = relation
+        fb_hydro_vir = relation(M_vir_hydro, z)
     else:
         raise ValueError("Invalid relation specified. Use 'magneticum', 'tng300' or a custom function with identical signature.")
 
