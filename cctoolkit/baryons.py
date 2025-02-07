@@ -67,8 +67,8 @@ def compute_dmo_mass(M_vir_hydro, z, fb_cosmic, relation='magneticum'):
         Redshift.
     fb_cosmic : float
         Cosmic baryon fraction.
-    relation : str, optional
-        The baryon fraction relation to use, either 'magneticum' or 'tng300'.
+    relation : str or function, optional
+        The baryon fraction relation to use, either 'magneticum' or 'tng300' or a custom function with signature (M, z).
         Default is 'magneticum'.
 
     Returns
@@ -83,12 +83,17 @@ def compute_dmo_mass(M_vir_hydro, z, fb_cosmic, relation='magneticum'):
     ValueError
         If an invalid relation is specified.
     """
-    if relation == 'magneticum':
-        fb_hydro_vir = baryon_fraction_magneticum(M_vir_hydro, z)
-    elif relation == 'tng300':
-        fb_hydro_vir = baryon_fraction_tng300(M_vir_hydro, z)
+    if isinstance(relation, str):
+        if relation == 'magneticum':
+            fb_hydro_vir = baryon_fraction_magneticum(M_vir_hydro, z)
+        elif relation == 'tng300':
+            fb_hydro_vir = baryon_fraction_tng300(M_vir_hydro, z)
+        else:
+            raise ValueError("Invalid relation specified. Use 'magneticum', 'tng300' or a custom function with identical signature.")
+    elif callable(relation):
+        fb_hydro_vir = relation
     else:
-        raise ValueError("Invalid relation specified. Use 'magneticum' or 'tng300'.")
+        raise ValueError("Invalid relation specified. Use 'magneticum', 'tng300' or a custom function with identical signature.")
 
     delta_f = (0.045 - 0.005 * z) * fb_cosmic  # Baryonic offset parameter
     q = 0.373  # Quasi-adiabatic parameter
