@@ -25,7 +25,7 @@ CCToolkit is a Python package designed for Cluster Cosmology calculations. It ha
 ## Features
 
 - **Cosmological Calculations**: Easily compute various cosmological quantities, including background quantities and power spectra.
-- **Halo Mass Function (HMF)**: Implements the multiplicity function and HMF parameters for different halo finders based on the model presented in [Castro et al. 2023](https://inspirehep.net/literature/2132031).
+- **Halo Mass Function (HMF)**: Implements the multiplicity function and HMF parameters for different halo finders based on the model presented in [Castro et al. 2023](https://inspirehep.net/literature/2132031) or the model presented in [Castro et al. 2025](https://inspirehep.net/literature/2910564) for dynamical dark energy cosmologies.
 - **Halo Bias**: Implements the functions to compute the linear halo bias, with corrections based on the Peak Background Split (PBS) model presented in [Castro et al. 2024b](https://inspirehep.net/literature/2824892).
 - **Baryonic impact**: Implements the model presented in [Castro et al. 2024a](https://inspirehep.net/literature/2718844) for the baryonic impact on cluster and group masses.
 - **Utility Functions**: Provides useful utilities for manipulating the power spectrum.
@@ -88,6 +88,20 @@ plt.ylabel(r"$\frac{{\rm d} n}{{\rm d} \log M}\,[{\rm Mpc}^{-3} h^{3}]$")
 plt.show()
 ```
 
+Alternatively, using following the model [Castro et al. 2025](https://inspirehep.net/literature/2910564) for dynamical dark energy:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+masses = np.logspace(13, 15.5, num=100)
+hmf = cosmo_calc.dndlnM(masses, 0, model='castro25')
+plt.loglog(masses, hmf)
+plt.xlabel(r"$M_{\rm vir}\,[M_\odot h^{-1}]$")
+plt.ylabel(r"$\frac{{\rm d} n}{{\rm d} \log M}\,[{\rm Mpc}^{-3} h^{3}]$")
+plt.show()
+```
+
 ### Halo Bias
 
 CCToolkit can compute both the PBS prescription as well as the corrected model following [Castro et al. 2024b](https://inspirehep.net/literature/2824892).
@@ -106,7 +120,7 @@ plt.show()
 
 ### Baryonic Impact
 
-CCToolkit can compute the equivalent dark-matter-only halo mass of a hydrodynamical simulated group or cluster in two simple steps:
+CCToolkit can compute the equivalent dark-matter-only halo mass of a hydrodynamical simulated group or cluster in two simple steps following the model of [Castro et al. 2024a](https://inspirehep.net/literature/2718844):
 
 ```python
 import cctoolkit
