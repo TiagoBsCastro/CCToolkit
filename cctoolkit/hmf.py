@@ -23,11 +23,11 @@ def multiplicity_function(peak_height, dlns_dlnR, Omega_m_z, best_fit_values, mo
     best_fit_values : dict
         Dictionary containing the best-fit parameters for the chosen halo finder.
     model : str, optional
-        The model to use for the multiplicity function. Options are 'castro23' (default) and 'castro24'.
+        The model to use for the multiplicity function. Options are 'castro23' (default) and 'castro25'.
     Omega_de_zta : float, optional
-        The dark energy density parameter at turn-around. Required if model is 'castro24'.
+        The dark energy density parameter at turn-around. Required if model is 'castro25'.
     w_de_zta : float, optional
-        The dark energy equation of state parameter at turn-around. Required if model is 'castro24'.
+        The dark energy equation of state parameter at turn-around. Required if model is 'castro25'.
 
     Returns:
     --------
@@ -43,15 +43,15 @@ def multiplicity_function(peak_height, dlns_dlnR, Omega_m_z, best_fit_values, mo
     ----------
     - [arXiv:2208.02174](https://arxiv.org/pdf/2208.02174): "Euclid preparation. XXIV. Calibration of the halo mass function in Λ(ν)CDM cosmologies",
       Castro et al., 2023.
-    - [arXiv:xxxx.xxxx](https://arxiv.org/pdf/xxxx.xxxx): "DUCA: Dynamic Universe Cosmological Analysis. The halo mass function in dynamic dark energy cosmologies",
-      Castro et al., 2024.
+    - [arXiv:2504.07608](https://arxiv.org/pdf/2504.07608): "DUCA: Dynamic Universe Cosmological Analysis. The halo mass function in dynamic dark energy cosmologies",
+      Castro et al., 2025.
     """
     if model == 'castro23':
         return multiplicity_function_castro23(peak_height, dlns_dlnR, Omega_m_z, best_fit_values)
-    elif model == 'castro24':
+    elif model == 'castro25':
         if Omega_de_zta is None or w_de_zta is None:
-            raise ValueError("Omega_de_zta and w_de_zta must be provided for model 'castro24'.")
-        return multiplicity_function_castro24(peak_height, dlns_dlnR, Omega_m_z, Omega_de_zta, w_de_zta, best_fit_values)
+            raise ValueError("Omega_de_zta and w_de_zta must be provided for model 'castro25'.")
+        return multiplicity_function_castro25(peak_height, dlns_dlnR, Omega_m_z, Omega_de_zta, w_de_zta, best_fit_values)
     else:
         raise ValueError(f"Model '{model}' is not implemented.")
 
@@ -110,9 +110,9 @@ def multiplicity_function_castro23(peak_height, dlns_dlnR, Omega_m_z, best_fit_v
 
     return multiplicity
 
-def multiplicity_function_castro24(peak_height, dlns_dlnR, Omega_m_z, Omega_de_zta, w_de_zta, best_fit_values):
+def multiplicity_function_castro25(peak_height, dlns_dlnR, Omega_m_z, Omega_de_zta, w_de_zta, best_fit_values):
     """
-    Calculate the multiplicity function using the Castro et al. 2024 model,
+    Calculate the multiplicity function using the Castro et al. 2025 model,
     which accounts for dynamic dark energy cosmologies.
 
     Parameters:
@@ -137,8 +137,8 @@ def multiplicity_function_castro24(peak_height, dlns_dlnR, Omega_m_z, Omega_de_z
 
     References
     ----------
-    - [arXiv:xxxx.xxxx](https://arxiv.org/pdf/xxxx.xxxx): "DUCA: Dynamic Universe Cosmological Analysis. I. The halo mass function in dynamic dark energy cosmologies",
-      Castro et al., 2024.
+    - [arXiv:2504.07608](https://arxiv.org/pdf/2504.07608): "DUCA: Dynamic Universe Cosmological Analysis. I. The halo mass function in dynamic dark energy cosmologies",
+      Castro et al., 2025.
     """
 
     # Extract best-fit parameters
@@ -215,7 +215,7 @@ best_fit_values_VELOCIraptor = {
     'q1': 0.3634, 'q2': -0.2732, 'qz': 0.0715
 }
 
-best_fit_values_castro24 = {
+best_fit_values_castro25 = {
     "a1": 0.8501, "a2": 0.234, "az": -0.0640, "alphaa": -0.178,
     "p1": -0.9880, "p2": -0.49,
     "q1": 0.559, "qz": 0.02701

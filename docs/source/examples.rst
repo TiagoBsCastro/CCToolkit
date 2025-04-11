@@ -41,7 +41,7 @@ Calculate the `Castro et al. 2023 <https://inspirehep.net/literature/2132031>`__
    plt.ylabel(r"$\frac{{\rm d} n}{{\rm d} \log M}\,[{\rm Mpc}^{-3} h^{3}]$")
    plt.show()
 
-Alternatively, one can specify the model in development for cosmologies with dynamic dark energy with:
+Alternatively, one can specify the model `Castro et al. 2025 <https://inspirehep.net/literature/2910564>`__ for cosmologies with dynamic dark energy with:
 
 .. code-block:: python
 
@@ -49,7 +49,7 @@ Alternatively, one can specify the model in development for cosmologies with dyn
    import matplotlib.pyplot as plt
 
    masses = np.logspace(13, 15.5, num=100)
-   hmf = cosmo_calc.dndlnM(masses, 0, model='castro24')
+   hmf = cosmo_calc.dndlnM(masses, 0, model='castro25')
    plt.loglog(masses, hmf)
    plt.xlabel(r"$M_{\rm vir}\,[M_\odot h^{-1}]$")
    plt.ylabel(r"$\frac{{\rm d} n}{{\rm d} \log M}\,[{\rm Mpc}^{-3} h^{3}]$")

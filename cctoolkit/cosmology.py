@@ -18,7 +18,7 @@ best_fits = {'AHF': best_fit_values_AHF,
              'ROCKSTAR': best_fit_values_ROCKSTAR,
              'SUBFIND': best_fit_values_SUBFIND,
              'VELOCIraptor': best_fit_values_VELOCIraptor,
-             'castro24': best_fit_values_castro24}
+             'castro25': best_fit_values_castro25}
 
 class CosmologyCalculator:
     """
@@ -526,7 +526,7 @@ class CosmologyCalculator:
             Default is `ROCKSTAR`. Options are: `AHF`, `ROCKSTAR`, `SUBFIND`, and `VELOCIraptor`.
         model : str, optional
             Descriptor for the multiplicity function model.
-            Default is `castro23`. Options are `castro23` and `castro24`.
+            Default is `castro23`. Options are `castro23` and `castro25`.
 
         Returns:
         --------
@@ -546,12 +546,12 @@ class CosmologyCalculator:
 
         Notes:
         ------
-        For the 'castro24' model, the `halo_finder` parameter is ignored, and appropriate best-fit values are used.
+        For the 'castro25' model, the `halo_finder` parameter is ignored, and appropriate best-fit values are used.
         """
         # Validate inputs
         if not isinstance(M, np.ndarray):
             raise ValueError("Masses should be an instance of numpy.ndarray")
-        if model not in ['castro23', 'castro24']:
+        if model not in ['castro23', 'castro25']:
             raise ValueError(f"Model '{model}' is not implemented.")
         
         # Compute variables
@@ -566,13 +566,13 @@ class CosmologyCalculator:
             if halo_finder not in valid_halo_finders:
                 raise ValueError(f"Invalid halo_finder '{halo_finder}'. Valid options are {valid_halo_finders}.")
             best_fit_values = best_fits[halo_finder]
-        elif model == 'castro24':
-            best_fit_values = best_fits['castro24']
+        elif model == 'castro25':
+            best_fit_values = best_fits['castro25']
         else:
             raise ValueError(f"Model '{model}' is not implemented.")
 
-        # Prepare additional parameters for castro24
-        if model == 'castro24':
+        # Prepare additional parameters for castro25
+        if model == 'castro25':
             zta = self.zta(z)
             Omega_de_zta = self.Omega_DE(zta)
             w_de_zta = self.wz(zta)
@@ -617,7 +617,7 @@ class CosmologyCalculator:
             Default is `ROCKSTAR`. Options are: `AHF`, `ROCKSTAR`, `SUBFIND`, and `VELOCIraptor`.
         model : str, optional
             Descriptor for the multiplicity function model.
-            Default is `castro23`. Options are `castro23` and `castro24`.
+            Default is `castro23`. Options are `castro23` and `castro25`.
 
         Returns:
         --------
@@ -631,12 +631,12 @@ class CosmologyCalculator:
 
         Notes:
         ------
-        For the 'castro24' model, the `halo_finder` parameter is ignored.
+        For the 'castro25' model, the `halo_finder` parameter is ignored.
         """
         # Validate inputs
         if not isinstance(M, np.ndarray):
             raise ValueError("Masses should be an instance of numpy.ndarray")
-        if model not in ['castro23', 'castro24']:
+        if model not in ['castro23', 'castro25']:
             raise ValueError(f"Model '{model}' is not implemented.")
 
         # Compute vfv and related variables

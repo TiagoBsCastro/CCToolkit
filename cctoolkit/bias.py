@@ -30,8 +30,8 @@ def bias_correction_PBS(Omega_m_z, dlnsigma_dlnR, S8, A0=1.150, a1=0.0929, b1=0.
     ----------
     - [arxiv:2208.02174](https://arxiv.org/pdf/2311.01465): "Euclid preparation. XXIV. Calibration of the halo mass function in Λ(ν)CDM cosmologies",
       Castro et al., 2023.
-    - [arxiv:XXXX.XXXXX](https://arxiv.org/pdf/XXXX.XXXXX): "Euclid preparation. Calibration of the linear halo bias in Λ(ν)CDM cosmologies",
-      Castro et al., in prep.
+    - [arxiv:2409.01877](https://arxiv.org/pdf/2409.01877): "Euclid preparation. Calibration of the linear halo bias in Λ(ν)CDM cosmologies",
+      Castro et al., 2024.
     """
     f0 = 1 + a1 * Omega_m_z
     f1 = 1 + b1 * dlnsigma_dlnR + b2 * dlnsigma_dlnR**2
@@ -63,7 +63,7 @@ def corrected_bias(b_PBS, Omega_m_z, dlnsigma_dlnR, S8):
     ----------
     - [arxiv:2208.02174](https://arxiv.org/pdf/2311.01465): "Euclid preparation. XXIV. Calibration of the halo mass function in Λ(ν)CDM cosmologies",
       Castro et al., 2023.
-    - [arxiv:XXXX.XXXXX](https://arxiv.org/pdf/XXXX.XXXXX): "Euclid preparation. Calibration of the linear halo bias in Λ(ν)CDM cosmologies",
+    - [arxiv:2409.01877](https://arxiv.org/pdf/2409.01877): "Euclid preparation. Calibration of the linear halo bias in Λ(ν)CDM cosmologies",
       Castro et al., in prep.
     """
     correction_factor = bias_correction_PBS(Omega_m_z, dlnsigma_dlnR, S8)
