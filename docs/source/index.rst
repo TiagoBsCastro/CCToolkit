@@ -17,7 +17,8 @@ Features
 
 - **Cosmological Calculations**: Easily compute various cosmological quantities, including background quantities and power spectra.
 - **Halo Mass Function (HMF)**: Calculate the multiplicity function and HMF parameters for different halo finders based on the model presented in `Castro et al. 2023 <https://inspirehep.net/literature/2132031>`_ or the model presented in `Castro et al. 2025 <https://inspirehep.net/literature/2910564>`_ for dynamical dark energy cosmologies.
-- **Halo Bias**: Includes functions to compute the linear halo bias, with corrections based on the Peak Background Split (PBS) model presented in Castro et al. 2024.
+- **Halo Bias**: Includes functions to compute the linear halo bias, with corrections based on the Peak Background Split (PBS) model presented in `Castro et al. 2024b <https://inspirehep.net/literature/2824892>`_.
+- **Baryonic impact**: Implements the model presented in `Castro et al. 2024a <https://inspirehep.net/literature/2718844>`_ for the baryonic impact on cluster and group masses. 
 - **Utility Functions**: Provides useful utilities for the manipulation of the power spectrum.
 
 .. toctree::
