@@ -18,7 +18,8 @@ best_fits = {'AHF': best_fit_values_AHF,
              'ROCKSTAR': best_fit_values_ROCKSTAR,
              'SUBFIND': best_fit_values_SUBFIND,
              'VELOCIraptor': best_fit_values_VELOCIraptor,
-             'castro25': best_fit_values_castro25}
+             'castro25': best_fit_values_castro25,
+             'lambda_cde': 0.34}
 
 class CosmologyCalculator:
     """
@@ -601,7 +602,7 @@ class CosmologyCalculator:
         else:
             return f_nu
 
-    def dndlnM(self, M, z, halo_finder='ROCKSTAR', model='castro23'):
+    def dndlnM(self, M, z, halo_finder='ROCKSTAR', model='castro23', PkDE=None):
         """
         Calculate the halo mass function, dn/dlnM, which gives the number density of halos 
         per logarithmic mass interval.
@@ -618,6 +619,9 @@ class CosmologyCalculator:
         model : str, optional
             Descriptor for the multiplicity function model.
             Default is `castro23`. Options are `castro23` and `castro25`.
+        PkDE : np.ndarray, optional
+            Tabulated clustering dark energy power-spectrum at turn-around z_ta=(1+z)/0.5^(2/3)-1.
+            Default is None which means that the modification presented in Castro et al 2025b is not used.
 
         Returns:
         --------
@@ -643,13 +647,35 @@ class CosmologyCalculator:
         M, R, v, dlnsdlnR, vfv_values = self.vfv(
             M, z, halo_finder=halo_finder, model=model, return_variables=True
         )
-
-        # Calculate dn/dlnM
+        # Calculate baseline dn/dlnM
         dn_dlnM = (
             self.critical_density(0.0) * self.Omega_m(0.0) * 1e10 / M * vfv_values * (-1 / 3 * dlnsdlnR)
-        )
-
-        return dn_dlnM
+            )
+        if PkDE is None:
+            return dn_dlnM
+        else:
+            if model != "castro25":
+                raise RuntimeError(f"The CDE model is only implemented for the dynamical dark energy model of Castro et al. 2025 and not {model}.")
+            # Calculate the sigmaDE
+            Delta       = virial_Delta(self.Omega_m(z))
+            DeltaTA     = 9*np.pi**2/16 # Non-linear delta_m at ta
+            deltaTA     = 3/5 * (3*np.pi/4)**(2/3) # linear delta_m at ta
+            Rvir        = R / np.cbrt(Delta)
+            a           = 1/(z+1)
+            zta         = self.zta(z)
+            ata         = 1/(zta+1)
+            Rta         = 2 * a * Rvir / ata
+            sigma_m_ta  = self.sigma(R, zta)
+            sigma_de_ta = ssq_given_Dk(Rta[:, np.newaxis], PkDE[:, 0], PkDE[:, 1] * PkDE[:, 0]**3 / (2*np.pi**2))
+            sigma_de_ta = np.sqrt(sigma_de_ta)
+            epsilon     = best_fits['lambda_cde'] * sigma_de_ta/sigma_m_ta*deltaTA/DeltaTA * self.Omega_DE(zta)/self.Omega_m(zta)
+            if self.wz(zta) < -1:
+                vmod = v / (1 - epsilon)
+            else:
+                vmod = v / (1 + epsilon)
+            vfv = multiplicity_function_castro25(vmod, dlnsdlnR, self.Omega_m(z), 
+                                         self.Omega_DE(zta), self.wz(zta), best_fits['castro25'])
+            return dn_dlnM/vfv_values * vfv
     
     def pbs_bias(self, M, z, halo_finder='ROCKSTAR', return_variables=False, hmf_model='castro23'):
         """
