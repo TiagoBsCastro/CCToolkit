@@ -5,6 +5,10 @@ This module can contain utility functions or constants that may be useful
 across the package. 
 """
 import numpy as np
+try: 
+    from numpy import trapezoid as trapz
+except ImportError:
+    from numpy import trapz as trapz
 
 def w_tophat(r, k):
     """
@@ -101,7 +105,7 @@ def ssq_given_Dk(r, k, Dk):
     float
         The value of sigma_r^2.
     """
-    s_sq = np.trapz(s_rsq_integrand_given_Dk(r, k, Dk), x=k)
+    s_sq = trapz(s_rsq_integrand_given_Dk(r, k, Dk), x=k)
     return s_sq
 
 def d_s_given_Dk(r, k, Dk):
@@ -122,7 +126,7 @@ def d_s_given_Dk(r, k, Dk):
     float
         The derivative of sigma_r with respect to r.
     """
-    d_s = np.trapz(d_s_rsq_integrand_given_Dk(r, k, Dk), x=k)
+    d_s = trapz(d_s_rsq_integrand_given_Dk(r, k, Dk), x=k)
     return d_s / 2.0 / np.sqrt(ssq_given_Dk(r, k, Dk))
 
 def compute_sigma8_norm(k, Dk, sigma8):
