@@ -37,9 +37,13 @@ Domain of validity:
   M >~ 1.5e12 Msun/h from the high-resolution runs and M >~ 1.2e13 Msun/h from the
   primary ones), and the w0waCDM + massive-neutrino parameter ranges of the DUCA I
   simulations.
-- The calibration uses narrow mass bins (Delta ln M = 0.2). In such bins the halo shot
-  noise dominates P_hh at k >~ 0.3 h/Mpc (n b^2 P_mm <~ 0.2 there). For much denser
-  samples, such as wide mass bins of low-mass halos, the small-scale clustering
+- The model describes a halo sample by one set of descriptors, and it is calibrated on
+  narrow mass bins (Delta ln M = 0.2). Never evaluate a wide bin at a single mass: average
+  the b_hm of its narrow sub-bins with number-density weights, which is exact for P_hm
+  (`CosmologyCalculator.nonlinear_bias` does this). P_hh of a wide bin would need the
+  cross spectra between sub-bins, which the model does not predict.
+- In the calibration bins the halo shot noise dominates P_hh at k >~ 0.3 h/Mpc
+  (n b^2 P_mm <~ 0.2 there). For much denser samples the small-scale clustering
   correction of P_hh is extrapolated: across the join the base model and its extension
   can then differ by tens of percent. b_hm is not affected.
 - The join changes the form of the model across 0.4-0.6 h/Mpc; validate it before
