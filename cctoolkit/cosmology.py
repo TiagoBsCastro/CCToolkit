@@ -13,6 +13,18 @@ from .utils import *
 from .hmf import *
 from .bias import *
 from .baryons import *
+from .nonlinear_bias import NonlinearHaloBias
+
+_integrate = np.trapezoid if hasattr(np, 'trapezoid') else np.trapz
+_NONLINEAR_BIAS_MODEL = None
+
+
+def _nonlinear_bias_model():
+    """The DUCA III model, loaded once per process."""
+    global _NONLINEAR_BIAS_MODEL
+    if _NONLINEAR_BIAS_MODEL is None:
+        _NONLINEAR_BIAS_MODEL = NonlinearHaloBias()
+    return _NONLINEAR_BIAS_MODEL
 
 best_fits = {'AHF': best_fit_values_AHF,
              'ROCKSTAR': best_fit_values_ROCKSTAR,
@@ -749,6 +761,188 @@ class CosmologyCalculator:
         S8 = self.sigma(8, 0.0) * np.sqrt(self.Omega_m(0.0)/0.3)
     
         return corrected_bias(b_pbs, Omz, dlnsdlnR, S8)
+
+    def nonlinear_scale(self, z):
+        """
+        Wavenumber k_nl where the linear dimensionless power spectrum equals one.
+
+        Parameters:
+        -----------
+        z : float
+            Redshift.
+
+        Returns:
+        --------
+        float
+            k_nl in h/Mpc, with Delta^2_L(k_nl, z) = 1 (log-log interpolation).
+        """
+        k, Dk = self.get_power_spectrum(z)
+        Dk = np.asarray(Dk, dtype=float).ravel()
+        above = np.flatnonzero(Dk >= 1.0)
+        if above.size == 0 or above[0] == 0:
+            raise ValueError(f"Delta^2(k) does not cross unity on the tabulated k range at z={z}.")
+        i = above[0]
+        return float(np.exp(np.interp(0.0, np.log(Dk[i - 1:i + 1]), np.log(k[i - 1:i + 1]))))
+
+    def S8_cb(self):
+        """
+        S8 as used by the DUCA III bias model: sigma8 of the cold matter (CDM plus
+        baryons) times sqrt(Omega_m / 0.3), with the total present matter density
+        Omega_m including massive neutrinos.
+
+        Returns:
+        --------
+        float
+            The clustering amplitude S8.
+        """
+        omega_total = self.Omega_m(0.0) + self.Omega_nu(0.0)
+        return float(self.sigma(8.0, 0.0)[0] * np.sqrt(omega_total / 0.3))
+
+    def halo_descriptors(self, M, z, bins=False, samples_per_bin=32):
+        """
+        Halo, redshift and cosmology inputs of the DUCA III nonlinear bias model.
+
+        Parameters:
+        -----------
+        M : np.ndarray
+            Halo masses in Msun/h or, with `bins=True`, the edges of the mass bins.
+        z : float
+            Redshift.
+        bins : bool, optional
+            If True, `M` are bin edges: the PBS bias is averaged over each bin with the
+            Castro et al. (2025) mass function, the number density is the integral of the
+            mass function over the bin, and the other descriptors are evaluated at the
+            mean halo mass of the bin. Default is False.
+        samples_per_bin : int, optional
+            Integration nodes per bin when `bins=True`. Default is 32.
+
+        Returns:
+        --------
+        dict
+            'mass', 'lagrangian_radius', 'peak_height', 'sigma_slope', 'pbs_bias', and, with
+            `bins=True`, 'number_density' (one value per mass or bin); 'redshift',
+            'omega_cb_z', 'S8', 'k_nl', 'w0', 'wa' and 'mnu' (scalars).
+        """
+        M = np.asarray(M, dtype=float)
+        if M.ndim != 1 or M.size < (2 if bins else 1) or np.any(M <= 0):
+            raise ValueError("M must be a one-dimensional array of positive masses.")
+        if self.growth_factor is None and z > self.zmax:
+            raise ValueError(f"z={z} is above zmax={self.zmax} of this calculator.")
+        Om_z = self.Omega_m(z)
+        if bins:
+            if np.any(np.diff(M) <= 0):
+                raise ValueError("Bin edges must be strictly increasing.")
+            segments = [
+                np.geomspace(lower, upper, samples_per_bin, endpoint=i == M.size - 2)
+                for i, (lower, upper) in enumerate(zip(M[:-1], M[1:]))
+            ]
+            grid = np.unique(np.concatenate(segments))
+        else:
+            # The PBS bias is a derivative of the mass function: evaluate it on a dense grid
+            # that contains the requested masses.
+            lo, hi = np.log10(M.min()) - 0.3, np.log10(M.max()) + 0.3
+            dense = np.logspace(lo, hi, max(64, int(64 * (hi - lo))))
+            grid = np.unique(np.concatenate([M, dense]))
+        _, R, v, slope, vfv = self.vfv(grid, z, return_variables=True, model='castro25')
+        pbs = 1.0 - np.gradient(np.log(vfv), np.log(v), edge_order=2) / delta_c(Om_z)
+        if bins:
+            log_mass = np.log(grid)
+            dndlnM = self.critical_density(0.0) * self.Omega_m(0.0) * 1e10 / grid * vfv * (-slope / 3.0)
+            number_density, pbs_bias, mean_mass = [], [], []
+            for lower, upper in zip(M[:-1], M[1:]):
+                inside = (grid >= lower) & (grid <= upper)
+                n = _integrate(dndlnM[inside], log_mass[inside])
+                number_density.append(n)
+                pbs_bias.append(_integrate(dndlnM[inside] * pbs[inside], log_mass[inside]) / n)
+                mean_mass.append(_integrate(dndlnM[inside] * grid[inside], log_mass[inside]) / n)
+            mass = np.asarray(mean_mass)
+            pbs_bias = np.asarray(pbs_bias)
+            _, R_mass, v_mass, slope_mass, _ = self.vfv(mass, z, return_variables=True, model='castro25')
+        else:
+            index = np.searchsorted(grid, M)
+            mass = M
+            R_mass, v_mass, slope_mass, pbs_bias = R[index], v[index], slope[index], pbs[index]
+        out = {
+            'mass': mass,
+            'lagrangian_radius': np.asarray(R_mass, dtype=float).ravel(),
+            'peak_height': np.asarray(v_mass, dtype=float).ravel(),
+            'sigma_slope': np.asarray(slope_mass, dtype=float).ravel(),
+            'pbs_bias': np.asarray(pbs_bias, dtype=float),
+            'redshift': float(z),
+            'omega_cb_z': float(Om_z),
+            'S8': self.S8_cb(),
+            'k_nl': self.nonlinear_scale(z),
+            'w0': float(self.params['w0']),
+            'wa': float(self.params['wa']),
+            'mnu': float(self.params['mnu']),
+        }
+        if bins:
+            out['number_density'] = np.asarray(number_density)
+        return out
+
+    def nonlinear_bias(self, k, M, z, matter_power=None, number_density=None, bins=False,
+                       return_variables=False):
+        """
+        Nonlinear halo-matter bias b_hm(k) and halo auto power spectrum P_hh(k) of the
+        DUCA III model (Castro 2026), for halos of mass M (or mass bins) at redshift z.
+
+        The model is calibrated on the DUCA simulations for z < 2.5, up to k = 1.13-2.25
+        h/Mpc depending on the halo mass (see `cctoolkit.nonlinear_bias`). All spectra refer
+        to the cold matter (CDM plus baryons): use the calculator with var='cdm+b' (the
+        default).
+
+        Parameters:
+        -----------
+        k : np.ndarray
+            Wavenumbers in h/Mpc.
+        M : np.ndarray
+            Halo masses in Msun/h, or bin edges with `bins=True`.
+        z : float
+            Redshift.
+        matter_power : np.ndarray, optional
+            Nonlinear cold-matter power spectrum P_mm(k, z) in (Mpc/h)^3 at the wavenumbers
+            `k`. Needed for P_hh, and for b_hm above k = 0.4 h/Mpc.
+        number_density : np.ndarray, optional
+            Number density of each halo sample in (h/Mpc)^3, needed for P_hh. With
+            `bins=True` it defaults to the mass function integrated over each bin.
+        bins : bool, optional
+            If True, `M` are bin edges and the predictions are for the halos in each bin
+            (see `halo_descriptors`). Default is False.
+        return_variables : bool, optional
+            If True, also return the descriptors used. Default is False.
+
+        Returns:
+        --------
+        tuple
+            (b_hm, P_hh), each of shape (n_mass, n_k); P_hh is None when the matter power
+            spectrum or the number density is missing. With `return_variables`, the
+            dictionary of descriptors is appended.
+        """
+        if self._transfer_var != 8:
+            raise RuntimeError("The DUCA III bias model needs the cold-matter spectrum (var='cdm+b').")
+        descriptors = self.halo_descriptors(M, z, bins=bins)
+        if number_density is None:
+            number_density = descriptors.get('number_density')
+        bias, halo_power = _nonlinear_bias_model().predict(
+            np.atleast_1d(np.asarray(k, dtype=float)),
+            descriptors['lagrangian_radius'],
+            descriptors['k_nl'],
+            descriptors['peak_height'],
+            descriptors['redshift'],
+            descriptors['sigma_slope'],
+            descriptors['omega_cb_z'],
+            descriptors['S8'],
+            descriptors['w0'],
+            descriptors['wa'],
+            descriptors['mnu'],
+            descriptors['pbs_bias'],
+            mass=descriptors['mass'],
+            number_density=number_density,
+            matter_power=matter_power,
+        )
+        if return_variables:
+            return bias, halo_power, descriptors
+        return bias, halo_power
 
     def _set_growth_factor(self):
         """

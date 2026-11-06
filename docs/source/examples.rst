@@ -71,6 +71,74 @@ Compute the linear halo bias or the at redshift z = 0 for a given mass. CCToolki
    plt.legend()
    plt.show()
 
+Nonlinear Halo Bias
+-------------------
+
+CCToolkit implements the DUCA III model (Castro 2026) of the nonlinear halo-matter bias :math:`b_{\rm hm}(k) = P_{\rm hm}(k)/P_{\rm mm}(k)` and of the halo auto power spectrum :math:`P_{\rm hh}(k)`, including stochasticity. It is calibrated on the DUCA simulations of `Castro et al. 2025 <https://inspirehep.net/literature/2910564>`__ for :math:`z < 2.5`, in :math:`w_0w_a` CDM cosmologies with massive neutrinos, up to :math:`k = 1.13`-:math:`2.25\,h\,{\rm Mpc}^{-1}` depending on the halo mass. On large scales :math:`b_{\rm hm} \to b_1`, the linear bias of `Castro et al. 2024b <https://inspirehep.net/literature/2824892>`__ recalibrated on the same simulations. All spectra refer to the cold matter (CDM plus baryons), the default ``var='cdm+b'`` of the calculator.
+
+Up to :math:`k = 0.4\,h\,{\rm Mpc}^{-1}` the cross bias needs only the cosmology. The auto spectrum, and the cross bias on smaller scales, also need the nonlinear cold-matter power spectrum :math:`P_{\rm mm}(k)`, for instance from an emulator or, as below, from CAMB:
+
+.. code-block:: python
+
+   import numpy as np
+   import matplotlib.pyplot as plt
+   import camb
+   from cctoolkit import CosmologyCalculator
+
+   params = {'H0': 67.0, 'Ob0': 0.049, 'Om0': 0.315, 'As': 2.1e-9, 'ns': 0.965,
+             'mnu': 0.06, 'num_massive_neutrinos': 1, 'w0': -0.9, 'wa': -0.3}
+   cosmo_calc = CosmologyCalculator(params, zmax=2.5)
+   z = 0.5
+   k = np.geomspace(1e-3, 1.5, 300)
+
+   # Cross bias of halos of given masses on large scales: shape (n_mass, n_k)
+   masses = np.array([2e12, 1e13, 1e14, 1e15])
+   b_hm, _ = cosmo_calc.nonlinear_bias(k[k <= 0.4], masses, z)
+
+   # Nonlinear cold-matter (no neutrinos) power spectrum, here from CAMB's HMcode
+   h = params['H0'] / 100
+   pars = camb.set_params(H0=params['H0'], ombh2=params['Ob0'] * h**2,
+                          omch2=(params['Om0'] - params['Ob0']) * h**2, mnu=params['mnu'],
+                          num_massive_neutrinos=1, w=params['w0'], wa=params['wa'],
+                          dark_energy_model='ppf', As=params['As'], ns=params['ns'],
+                          redshifts=[z], kmax=10, NonLinear=camb.model.NonLinear_both)
+   P_nl = camb.get_results(pars).get_matter_power_interpolator(
+       nonlinear=True, var1='delta_nonu', var2='delta_nonu', hubble_units=True, k_hunit=True)
+   P_mm = P_nl.P(z, k)
+
+   # Halos in narrow mass bins (as in the calibration): b_hm and P_hh, shape (n_bins, n_k).
+   # The number density of each bin follows from the Castro et al. 2025 mass function.
+   edges = np.exp(np.arange(np.log(2e12), np.log(2e15), 0.2))
+   b_hm, P_hh = cosmo_calc.nonlinear_bias(k, edges, z, matter_power=P_mm, bins=True)
+
+   fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+   for i in range(0, len(edges) - 1, 10):
+       ax1.semilogx(k, b_hm[i])
+       ax2.loglog(k, P_hh[i])
+   ax1.set_xlabel(r"$k\,[h\,{\rm Mpc}^{-1}]$")
+   ax1.set_ylabel(r"$b_{\rm hm}(k)$")
+   ax2.set_xlabel(r"$k\,[h\,{\rm Mpc}^{-1}]$")
+   ax2.set_ylabel(r"$P_{\rm hh}(k)\,[h^{-3}\,{\rm Mpc}^3]$")
+   plt.show()
+
+``nonlinear_bias`` returns arrays of shape ``(n_mass, n_k)``; ``P_hh`` is ``None`` when the matter power spectrum or the number density is missing. With ``bins=True`` the masses are bin edges: the bias is averaged over each bin with the Castro et al. 2025 mass function, which also gives the number density. Pass ``number_density`` to use the abundance of your own halo sample, and ``return_variables=True`` to get the halo and cosmology descriptors used by the model (``halo_descriptors``). ``cctoolkit.NonlinearHaloBias`` evaluates the model directly on these descriptors, without CAMB:
+
+.. code-block:: python
+
+   from cctoolkit import NonlinearHaloBias
+
+   model = NonlinearHaloBias()
+   b_hm, P_hh, d = cosmo_calc.nonlinear_bias(k, edges, z, matter_power=P_mm, bins=True,
+                                             return_variables=True)
+   b1 = model.linear_bias(d['peak_height'], d['sigma_slope'], d['omega_cb_z'], d['S8'],
+                          d['pbs_bias'])
+
+Domain of validity:
+
+- :math:`z < 2.5`, halos above 150 particles of the DUCA runs (for the Fiducial cosmology, :math:`M \gtrsim 1.5\times10^{12}\,M_\odot h^{-1}` from the high-resolution runs), and the cosmological parameter ranges of the DUCA I simulations.
+- The calibration uses bins of width :math:`\Delta\ln M = 0.2`, in which the halo shot noise dominates :math:`P_{\rm hh}` at :math:`k \gtrsim 0.3\,h\,{\rm Mpc}^{-1}`. For much denser samples, such as wide bins of low-mass halos, :math:`P_{\rm hh}` on small scales is an extrapolation; :math:`b_{\rm hm}` is not affected.
+- Between 0.4 and :math:`0.6\,h\,{\rm Mpc}^{-1}` the large-scale model is joined to its small-scale extension. Validate the join before transforming the predictions to configuration space.
+
 Impact of Baryons on Cluster and Group masses
 ---------------------------------------------
 

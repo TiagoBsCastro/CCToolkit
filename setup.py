@@ -4,6 +4,7 @@ setup(
     name='cctoolkit',
     version='1.0.0',
     packages=find_packages(),
+    package_data={'cctoolkit': ['data/*.json']},
     install_requires=[
         'numpy',
         'scipy',
