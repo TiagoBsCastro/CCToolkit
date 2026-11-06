@@ -33,6 +33,14 @@ hmf
    :undoc-members:
    :show-inheritance:
 
+nonlinear_bias
+--------------
+
+.. automodule:: cctoolkit.nonlinear_bias
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 baryons
 -------
 
