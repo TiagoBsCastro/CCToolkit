@@ -140,10 +140,12 @@ def test_calculator_nonlinear_bias(calculator):
     masses = np.geomspace(1e12, 1e15, 4)
     bias, halo = calculator.nonlinear_bias(k[k < 0.4], masses, 0.5)
     assert bias.shape == (4, np.sum(k < 0.4)) and halo is None
+    edges = np.exp(np.arange(np.log(2e12), np.log(1e15), 0.2))
     bias, halo, d = calculator.nonlinear_bias(
-        k, np.geomspace(1e12, 1e15, 5), 1.0, matter_power=power, bins=True, return_variables=True
+        k, edges, 1.0, matter_power=power, bins=True, return_variables=True
     )
-    assert bias.shape == halo.shape == (4, k.size)
+    assert bias.shape == halo.shape == (edges.size - 1, k.size)
+    assert np.array_equal(d["bin_index"], np.arange(edges.size - 1))
     assert np.all(np.isfinite(bias)) and np.all(halo > 0)
     b1 = NonlinearHaloBias().linear_bias(
         d["peak_height"], d["sigma_slope"], d["omega_cb_z"], d["S8"], d["pbs_bias"]
@@ -152,3 +154,27 @@ def test_calculator_nonlinear_bias(calculator):
     # On large scales the auto spectrum is clustering plus stochastic noise near 1/n.
     noise = halo[:, 0] - bias[:, 0] ** 2 * power[0]
     assert np.all(np.abs(noise * d["number_density"] - 1.0) < 0.5)
+
+
+def test_wide_bins_average_sub_bins(calculator):
+    k = np.geomspace(1e-3, 1.5, 50)
+    power = 2.0e4 * (k / 0.02) / (1.0 + (k / 0.02) ** 2.4) + 50.0
+    edges = np.array([1e13, 1e14, 1.2e14])  # one wide bin, one narrow bin
+    with pytest.warns(UserWarning):
+        bias, halo, d = calculator.nonlinear_bias(
+            k, edges, 0.5, matter_power=power, bins=True, return_variables=True
+        )
+    assert halo is None and bias.shape == (2, k.size)
+    parts = np.bincount(d["bin_index"])
+    assert parts[0] == 12 and parts[1] == 1
+    # The wide bin is the number-weighted mean of narrow sub-bins (up to the finite-
+    # difference PBS derivative at the edge shared with the next bin).
+    sub = np.geomspace(1e13, 1e14, 13)
+    b_sub, _, d_sub = calculator.nonlinear_bias(
+        k, sub, 0.5, matter_power=power, bins=True, return_variables=True
+    )
+    n = d_sub["number_density"]
+    np.testing.assert_allclose(bias[0], n @ b_sub / n.sum(), rtol=1e-6)
+    with pytest.raises(ValueError):
+        calculator.nonlinear_bias(k, edges, 0.5, matter_power=power, bins=True,
+                                  number_density=np.ones(2))

@@ -136,7 +136,8 @@ Up to :math:`k = 0.4\,h\,{\rm Mpc}^{-1}` the cross bias needs only the cosmology
 Domain of validity:
 
 - :math:`z < 2.5`, halos above 150 particles of the DUCA runs (for the Fiducial cosmology, :math:`M \gtrsim 1.5\times10^{12}\,M_\odot h^{-1}` from the high-resolution runs), and the cosmological parameter ranges of the DUCA I simulations.
-- The calibration uses bins of width :math:`\Delta\ln M = 0.2`, in which the halo shot noise dominates :math:`P_{\rm hh}` at :math:`k \gtrsim 0.3\,h\,{\rm Mpc}^{-1}`. For much denser samples, such as wide bins of low-mass halos, :math:`P_{\rm hh}` on small scales is an extrapolation; :math:`b_{\rm hm}` is not affected.
+- The model describes a halo sample by one set of properties, and it is calibrated on bins of width :math:`\Delta\ln M = 0.2`. A wider bin is therefore never evaluated at a single mass: ``nonlinear_bias`` splits it into sub-bins of at most that width and averages their :math:`b_{\rm hm}` with number-density weights, which is exact for :math:`P_{\rm hm}`. The auto spectrum of a wide bin would also need the cross spectra between its sub-bins, so :math:`P_{\rm hh}` is only returned for bins of at most :math:`\Delta\ln M = 0.2`.
+- In these bins the halo shot noise dominates :math:`P_{\rm hh}` at :math:`k \gtrsim 0.3\,h\,{\rm Mpc}^{-1}`. For much denser samples (for instance a ``number_density`` far above the mass-function value), :math:`P_{\rm hh}` on small scales is an extrapolation.
 - Between 0.4 and :math:`0.6\,h\,{\rm Mpc}^{-1}` the large-scale model is joined to its small-scale extension. Validate the join before transforming the predictions to configuration space.
 
 Impact of Baryons on Cluster and Group masses

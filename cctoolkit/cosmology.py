@@ -5,6 +5,8 @@ This module defines the CosmologyCalculator class, which manages cosmological
 parameters and calculations related to the power spectrum and other cosmological
 quantities using CAMB.
 """
+import warnings
+
 import numpy as np
 from camb import CAMBparams, get_results
 from scipy.integrate import solve_ivp
@@ -17,6 +19,10 @@ from .nonlinear_bias import NonlinearHaloBias
 
 _integrate = np.trapezoid if hasattr(np, 'trapezoid') else np.trapz
 _NONLINEAR_BIAS_MODEL = None
+# Calibrated width of the mass bins of the DUCA III model, in ln M. Bins up to 5% wider
+# (integer particle-number edges) are treated as one bin.
+MAX_BIN_WIDTH = 0.2
+_BIN_WIDTH_SLACK = 0.05
 
 
 def _nonlinear_bias_model():
@@ -917,12 +923,50 @@ class CosmologyCalculator:
             (b_hm, P_hh), each of shape (n_mass, n_k); P_hh is None when the matter power
             spectrum or the number density is missing. With `return_variables`, the
             dictionary of descriptors is appended.
+
+        Notes:
+        ------
+        The model describes a halo sample by one set of descriptors, and it is calibrated
+        on bins of width Delta ln M = 0.2. With `bins=True`, a wider bin is split into
+        sub-bins of at most that width, and its b_hm is the average of theirs weighted by
+        their number densities, which is exact for P_hm. The auto spectrum of a wide bin
+        would also need the cross spectra between its sub-bins, which the model does not
+        predict, so P_hh is only available for bins of at most Delta ln M = 0.2. The
+        descriptors returned are those of the sub-bins, with 'bin_index' giving the bin
+        each belongs to.
         """
         if self._transfer_var != 8:
             raise RuntimeError("The DUCA III bias model needs the cold-matter spectrum (var='cdm+b').")
-        descriptors = self.halo_descriptors(M, z, bins=bins)
+        k = np.atleast_1d(np.asarray(k, dtype=float))
+        if bins:
+            edges = np.asarray(M, dtype=float)
+            widths = np.log(edges[1:] / edges[:-1])
+            if np.any(~np.isfinite(widths)) or np.any(widths <= 0):
+                raise ValueError("Bin edges must be positive and strictly increasing.")
+            parts = np.maximum(1, np.ceil(widths / MAX_BIN_WIDTH - _BIN_WIDTH_SLACK)).astype(int)
+            wide = bool(np.any(parts > 1))
+            if wide and matter_power is not None and number_density is not None:
+                raise ValueError(
+                    f"P_hh is only available for bins of at most Delta ln M = {MAX_BIN_WIDTH}; "
+                    "use narrower bins, or omit number_density to get b_hm only."
+                )
+            if wide and matter_power is not None:
+                warnings.warn(
+                    f"Bins wider than Delta ln M = {MAX_BIN_WIDTH}: b_hm is averaged over "
+                    "sub-bins, and P_hh is not computed (it needs the cross spectra between "
+                    "sub-bins).",
+                    stacklevel=2,
+                )
+            fine = [np.geomspace(lo, hi, n + 1)[:-1] for lo, hi, n in zip(edges[:-1], edges[1:], parts)]
+            fine_edges = np.concatenate(fine + [edges[-1:]])
+            bin_index = np.repeat(np.arange(parts.size), parts)
+            descriptors = self.halo_descriptors(fine_edges, z, bins=True)
+            descriptors['bin_index'] = bin_index
+        else:
+            descriptors = self.halo_descriptors(M, z)
+            wide = False
         if number_density is None:
-            number_density = descriptors.get('number_density')
+            number_density = None if wide else descriptors.get('number_density')
         bias, halo_power = _nonlinear_bias_model().predict(
             np.atleast_1d(np.asarray(k, dtype=float)),
             descriptors['lagrangian_radius'],
@@ -940,6 +984,15 @@ class CosmologyCalculator:
             number_density=number_density,
             matter_power=matter_power,
         )
+        if wide:
+            # P_hm is linear in the halo field: the bias of a bin is the number-weighted
+            # mean of the biases of its sub-bins.
+            weights = descriptors['number_density']
+            totals = np.bincount(descriptors['bin_index'], weights=weights)
+            bias = np.stack(
+                [np.bincount(descriptors['bin_index'], weights=weights * column)
+                 for column in bias.T], axis=1
+            ) / totals[:, None]
         if return_variables:
             return bias, halo_power, descriptors
         return bias, halo_power

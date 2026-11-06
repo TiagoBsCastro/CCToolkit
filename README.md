@@ -170,7 +170,7 @@ plt.show()
 
 Pass `number_density` to use the abundance of your own halo sample, and `return_variables=True` to get the halo and cosmology descriptors used by the model. `NonlinearHaloBias` evaluates the model directly on these descriptors.
 
-The model is calibrated on bins of width $\Delta\ln M = 0.2$, in which the halo shot noise dominates $P_{\rm hh}$ at $k \gtrsim 0.3\,h\,{\rm Mpc}^{-1}$. For much denser samples, such as wide bins of low-mass halos, $P_{\rm hh}$ on small scales is an extrapolation; $b_{\rm hm}$ is not affected. Between 0.4 and $0.6\,h\,{\rm Mpc}^{-1}$ the large-scale model is joined to its small-scale extension; validate the join before transforming the predictions to configuration space.
+The model describes a halo sample by one set of properties, and it is calibrated on bins of width $\Delta\ln M = 0.2$. A wider bin is therefore never evaluated at a single mass: `nonlinear_bias` splits it into sub-bins of at most that width and averages their $b_{\rm hm}$ with number-density weights, which is exact for $P_{\rm hm}$. The auto spectrum of a wide bin would also need the cross spectra between its sub-bins, so $P_{\rm hh}$ is only returned for bins of at most $\Delta\ln M = 0.2$. In these bins the halo shot noise dominates $P_{\rm hh}$ at $k \gtrsim 0.3\,h\,{\rm Mpc}^{-1}$; for much denser samples (for instance a `number_density` far above the mass-function value), $P_{\rm hh}$ on small scales is an extrapolation. Between 0.4 and $0.6\,h\,{\rm Mpc}^{-1}$ the large-scale model is joined to its small-scale extension; validate the join before transforming the predictions to configuration space.
 
 ### Baryonic Impact
 
